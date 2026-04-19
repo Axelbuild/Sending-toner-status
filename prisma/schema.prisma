@@ -1,0 +1,58 @@
+generator client {
+  provider = "prisma-client"
+  output   = "../generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+model Printers {
+  id           Int      @id @default(autoincrement())
+  name         String
+  ip           String   @unique
+  serialNumber String?
+  brand        String
+  model        String
+  groupId      Int
+  createdAt    DateTime @default(now())
+
+  group     Group                   @relation(fields: [groupId], references: [id])
+  alerts    PrinterAlertState[]
+  snapshots PrinterStatusSnapshot[]
+}
+
+model Group {
+  id       Int        @id @default(autoincrement())
+  name     String
+  printers Printers[]
+}
+
+model PrinterAlertState {
+  id                Int       @id @default(autoincrement())
+  printerId         Int
+  color             String
+  warnedAt10        Boolean   @default(false)
+  lastCriticalLevel Int?
+  currentLevel      Int?
+  lastNotifiedAt    DateTime?
+  createdAt         DateTime  @default(now())
+  updatedAt         DateTime  @updatedAt
+
+  printer Printers @relation(fields: [printerId], references: [id])
+
+  @@unique([printerId, color])
+}
+
+model PrinterStatusSnapshot {
+  id        Int      @id @default(autoincrement())
+  printerId Int
+  online    Boolean
+  black     Int?
+  cyan      Int?
+  magenta   Int?
+  yellow    Int?
+  createdAt DateTime @default(now())
+
+  printer Printers @relation(fields: [printerId], references: [id])
+}
