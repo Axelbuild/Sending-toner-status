@@ -130,19 +130,25 @@ export async function getLastPrinterStatusController(
 }
 
 export async function updatePrinterController(req: any, reply: FastifyReply) {
-    try {
-        const data = await service.update(Number(req.params.id), req.body);
-        return reply.send(data);
-    } catch {
-        return reply.status(404).send({ message: "Error updating" });
-    }
+  try {
+    const data = await service.update(Number(req.params.id), req.body);
+    return reply.send(data);
+  } catch (err: any) {
+    console.error("Error updating printer:", err);
+    return reply.status(400).send({
+      message: err.message || "Error updating printer",
+    });
+  }
 }
 
 export async function deletePrinterController(req: any, reply: FastifyReply) {
-    try {
-        await service.delete(Number(req.params.id));
-        return reply.send({ message: "Deleted" });
-    } catch {
-        return reply.status(404).send({ message: "Not found" });
-    }
+  try {
+    const data = await service.delete(Number(req.params.id));
+    return reply.send(data);
+  } catch (err: any) {
+    console.error("Error deleting printer:", err);
+    return reply.status(400).send({
+      message: err.message || "Error deleting printer",
+    });
+  }
 }

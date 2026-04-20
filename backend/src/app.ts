@@ -1,17 +1,18 @@
 import Fastify from "fastify";
 import cors from "@fastify/cors";
-import { groupRoutes } from "./routes/group.routes";
 import { checkPrinters } from "./jobs/printer.job";
 import { printerRoutes } from "./routes/printer.routes";
-
+import { groupRoutes } from "./routes/group.routes";
 
 const fastify = Fastify({
   logger: true,
 });
 
 await fastify.register(cors, {
-  origin: true,
-})
+  origin: ["http://localhost:5173"],
+  methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+  allowedHeaders: ["Content-Type", "Authorization"],
+});
 
 fastify.register(printerRoutes);
 fastify.register(groupRoutes);
@@ -22,7 +23,7 @@ setInterval(async () => {
   } catch (error) {
     fastify.log.error(error);
   }
-}, 300000); 
+}, 300000);
 
 fastify.get("/", async function handler() {
   return { online: true };

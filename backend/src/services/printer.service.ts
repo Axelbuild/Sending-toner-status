@@ -85,9 +85,27 @@ export class PrinterService {
     });
   }
 
-  async delete(id: number) {
-    return prisma.printers.delete({
-      where: { id },
-    });
+async delete(id: number) {
+  const printerExists = await prisma.printers.findUnique({
+    where: { id },
+  });
+
+  if (!printerExists) {
+    throw new Error("Printer not found");
   }
+
+  await prisma.$transaction([
+    prisma.printerAlertState.deleteMany({
+      where: { printerId: id },
+    }),
+    prisma.printerStatusSnapshot.deleteMany({
+      where: { printerId: id },
+    }),
+    prisma.printers.delete({
+      where: { id },
+    }),
+  ]);
+
+  return { message: "Deleted" };
+}
 }
