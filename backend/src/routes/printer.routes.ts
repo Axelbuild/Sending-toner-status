@@ -1,0 +1,13 @@
+import { FastifyInstance } from "fastify";
+import { postCreatePrinterController, getPrinterStatusController, getLastPrinterStatusController, getPrinterController, getPrinterByIdController, updatePrinterController, deletePrinterController} from "../controllers/printer.controllers"
+
+export async function printerRoutes(app: FastifyInstance){
+    app.post("/printer", postCreatePrinterController);
+    app.get("/printer/status", getPrinterStatusController)
+    app.get("/printer/status-last", getLastPrinterStatusController);
+    app.get("/printer", getPrinterController);
+    app.get("/printer/:id", getPrinterByIdController);
+    app.put("/printer/:id", updatePrinterController)
+    app.delete("/printer/:id", deletePrinterController)
+}
+
