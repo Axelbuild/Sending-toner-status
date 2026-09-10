@@ -1,7 +1,11 @@
 import type { Group, GroupInput } from "../types/group";
-import type { PrinterInput, PrinterStatus } from "../types/printer";
+import type { DetectedPrinter, PrinterCatalog, PrinterInput, PrinterStatus } from "../types/printer";
 
-const API_BASE = "http://localhost:3333";
+const API_BASE = import.meta.env.VITE_API_BASE;
+
+if (!API_BASE) {
+  throw new Error("VITE_API_BASE não configurado.");
+}
 
 async function handleResponse<T>(response: Response): Promise<T> {
   if (!response.ok) {
@@ -19,6 +23,33 @@ async function handleResponse<T>(response: Response): Promise<T> {
   }
 
   return response.json();
+}
+
+export async function runPrinterRecovery(): Promise<{
+  message: string;
+  result: {
+    checked: number;
+    skippedWithoutSerial: number;
+    skippedOnline: number;
+    found: number;
+    updated: number;
+    notFound: number;
+    errors: number;
+  };
+}> {
+  const response = await fetch(`${API_BASE}/printer/recovery/run`, {
+    method: "POST",
+  });
+
+  return handleResponse(response);
+}
+
+export async function cancelPrinterRecovery(): Promise<{ message: string }> {
+  const response = await fetch(`${API_BASE}/printer/recovery/cancel`, {
+    method: "POST",
+  });
+
+  return handleResponse<{ message: string }>(response);
 }
 
 export async function fetchPrinterStatus(): Promise<PrinterStatus[]> {
@@ -96,4 +127,18 @@ export async function deletePrinter(id: number): Promise<{ message: string }> {
   });
 
   return handleResponse<{ message: string }>(response);
+}
+
+export async function fetchPrinterCatalog(): Promise<PrinterCatalog> {
+  const response = await fetch(`${API_BASE}/printer/catalog`);
+  return handleResponse<PrinterCatalog>(response);
+}
+
+export async function detectPrinter(ip: string): Promise<DetectedPrinter> {
+  const response = await fetch(`${API_BASE}/printer/detect`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ ip }),
+  });
+  return handleResponse<DetectedPrinter>(response);
 }

@@ -6,29 +6,75 @@ import {
   deleteGroup,
   updatePrinter,
   deletePrinter,
+  fetchPrinterCatalog,
 } from "./services/api";
 import type { Group } from "./types/group";
-import type { PrinterStatus } from "./types/printer";
+import type { PrinterCatalog, PrinterStatus } from "./types/printer";
 import { GroupForm } from "./components/GroupForm";
 import { PrinterForm } from "./components/PrinterForm";
 import { PrinterCard } from "./components/PrinterCard";
 import { TopNav } from "./components/TopNav";
+import { PrinterRecoveryButton } from "./components/PrinterRecoveryButton";
 
 type Tab = "dashboard" | "groups" | "printers";
+type DashboardFilter =
+  | "ONLINE"
+  | "UNSTABLE"
+  | "TONER_WARNING"
+  | "TONER_CRITICAL"
+  | "OFFLINE"
+  | null;
 
-const brandModels = {
+function hasTonerLevelInRange(
+  printer: PrinterStatus,
+  minimum: number,
+  maximum: number
+) {
+  return Object.values(printer.ink).some(
+    (level) =>
+      typeof level === "number" &&
+      Number.isFinite(level) &&
+      level >= 0 &&
+      level >= minimum &&
+      level <= maximum
+  );
+}
+
+function matchesDashboardFilter(
+  printer: PrinterStatus,
+  filter: Exclude<DashboardFilter, null>
+) {
+  const status = printer.status?.toUpperCase();
+
+  switch (filter) {
+    case "ONLINE":
+      return status === "ONLINE";
+    case "UNSTABLE":
+      return status === "SUSPECT";
+    case "TONER_WARNING":
+      return hasTonerLevelInRange(printer, 3, 10);
+    case "TONER_CRITICAL":
+      return hasTonerLevelInRange(printer, 0, 2);
+    case "OFFLINE":
+      return status === "OFFLINE";
+  }
+}
+
+const initialBrandModels: PrinterCatalog = {
   HP: ["HP E57540DN", "HP PRO4103FDW", "HP M428FDW", "HP M432FDN"],
   Samsung: ["Samsung M4070FR", "Samsung M4020", "Samsung M4080FX"],
-} as const;
+};
 
 export default function App() {
   const [tab, setTab] = useState<Tab>("dashboard");
   const [printers, setPrinters] = useState<PrinterStatus[]>([]);
   const [groups, setGroups] = useState<Group[]>([]);
+  const [brandModels, setBrandModels] = useState<PrinterCatalog>(initialBrandModels);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [query, setQuery] = useState("");
   const [groupFilter, setGroupFilter] = useState<string>("all");
+  const [dashboardFilter, setDashboardFilter] = useState<DashboardFilter>(null);
   const [lastUpdated, setLastUpdated] = useState<string | null>(null);
 
   const [editingGroupId, setEditingGroupId] = useState<number | null>(null);
@@ -46,13 +92,15 @@ export default function App() {
       if (showLoading) setLoading(true);
       setError(null);
 
-      const [printerData, groupData] = await Promise.all([
+      const [printerData, groupData, catalogData] = await Promise.all([
         fetchPrinterStatus(),
         fetchGroups(),
+        fetchPrinterCatalog(),
       ]);
 
       setPrinters(printerData);
       setGroups(groupData);
+      setBrandModels(catalogData);
       setLastUpdated(new Date().toLocaleTimeString("pt-BR"));
     } catch (err) {
       setError(err instanceof Error ? err.message : "Erro inesperado.");
@@ -62,40 +110,70 @@ export default function App() {
   }
 
   useEffect(() => {
-    loadData();
+    const initialLoad = window.setTimeout(() => {
+      void loadData();
+    }, 0);
 
     const interval = setInterval(() => {
-      loadData(false);
+      void loadData(false);
     }, 60000);
 
-    return () => clearInterval(interval);
+    return () => {
+      clearTimeout(initialLoad);
+      clearInterval(interval);
+    };
   }, []);
 
   const filteredPrinters = useMemo(() => {
     const term = query.toLowerCase().trim();
 
-    return printers.filter((printer) => {
+    const printersInGroup = printers.filter(
+      (printer) => groupFilter === "all" || String(printer.groupId) === groupFilter
+    );
+
+    const printersMatchingSearch = printersInGroup.filter((printer) => {
       const matchesQuery =
         !term ||
         printer.name.toLowerCase().includes(term) ||
         printer.ip.toLowerCase().includes(term);
 
-      const matchesGroup =
-        groupFilter === "all" || String(printer.groupId) === groupFilter;
-
-      return matchesQuery && matchesGroup;
+      return matchesQuery;
     });
-  }, [printers, query, groupFilter]);
 
-  const total = printers.length;
-  const online = printers.filter((p) => p.online).length;
-  const offline = total - online;
-  const warning = printers.filter((p) =>
-    Object.values(p.ink).some((v) => typeof v === "number" && v > 2 && v <= 10)
+    return dashboardFilter
+      ? printersMatchingSearch.filter((printer) =>
+          matchesDashboardFilter(printer, dashboardFilter)
+        )
+      : printersMatchingSearch;
+  }, [printers, query, groupFilter, dashboardFilter]);
+
+  const printersInSelectedGroup = useMemo(
+    () => printers.filter(
+      (printer) => groupFilter === "all" || String(printer.groupId) === groupFilter
+    ),
+    [printers, groupFilter]
+  );
+
+  const total = printersInSelectedGroup.length;
+  const online = printersInSelectedGroup.filter((printer) =>
+    matchesDashboardFilter(printer, "ONLINE")
   ).length;
-  const critical = printers.filter((p) =>
-    Object.values(p.ink).some((v) => typeof v === "number" && v <= 2)
+  const suspect = printersInSelectedGroup.filter((printer) =>
+    matchesDashboardFilter(printer, "UNSTABLE")
   ).length;
+  const warning = printersInSelectedGroup.filter((printer) =>
+    matchesDashboardFilter(printer, "TONER_WARNING")
+  ).length;
+  const critical = printersInSelectedGroup.filter((printer) =>
+    matchesDashboardFilter(printer, "TONER_CRITICAL")
+  ).length;
+  const offline = printersInSelectedGroup.filter((printer) =>
+    matchesDashboardFilter(printer, "OFFLINE")
+  ).length;
+
+  function toggleDashboardFilter(filter: Exclude<DashboardFilter, null>) {
+    setDashboardFilter((current) => current === filter ? null : filter);
+  }
 
   function startEditGroup(group: Group) {
     setEditingGroupId(group.id);
@@ -226,6 +304,8 @@ export default function App() {
                 <button onClick={() => loadData()} style={buttonStyle}>
                   Atualizar agora
                 </button>
+
+                 <PrinterRecoveryButton onFinished={() => loadData(false)} />
               </div>
 
               <div
@@ -252,11 +332,12 @@ export default function App() {
                 gap: 16,
               }}
             >
-              <SummaryCard title="Total" value={total} />
-              <SummaryCard title="Online" value={online} />
-              <SummaryCard title="Alerta 10%" value={warning} />
-              <SummaryCard title="Crítico 2%" value={critical} />
-              <SummaryCard title="Offline" value={offline} />
+              <SummaryCard title="Total" value={total} active={false} onClick={() => setDashboardFilter(null)} />
+              <SummaryCard title="On-line" value={online} active={dashboardFilter === "ONLINE"} onClick={() => toggleDashboardFilter("ONLINE")} />
+              <SummaryCard title="Instável" value={suspect} active={dashboardFilter === "UNSTABLE"} onClick={() => toggleDashboardFilter("UNSTABLE")} />
+              <SummaryCard title="Alerta 10%" value={warning} active={dashboardFilter === "TONER_WARNING"} onClick={() => toggleDashboardFilter("TONER_WARNING")} />
+              <SummaryCard title="Crítico 2%" value={critical} active={dashboardFilter === "TONER_CRITICAL"} onClick={() => toggleDashboardFilter("TONER_CRITICAL")} />
+              <SummaryCard title="Offline" value={offline} active={dashboardFilter === "OFFLINE"} onClick={() => toggleDashboardFilter("OFFLINE")} />
             </div>
 
             {loading && <div style={{ color: "#cbd5e1" }}>Carregando...</div>}
@@ -498,22 +579,44 @@ export default function App() {
   );
 }
 
-function SummaryCard({ title, value }: { title: string; value: number }) {
+function SummaryCard({
+  title,
+  value,
+  active,
+  onClick,
+}: {
+  title: string;
+  value: number;
+  active: boolean;
+  onClick: () => void;
+}) {
   return (
-    <div
+    <button
+      type="button"
+      className="summary-card"
+      aria-pressed={active}
+      onClick={onClick}
       style={{
         background: "#1e293b",
         borderRadius: 16,
         padding: 16,
-        boxShadow: "0 2px 10px rgba(0,0,0,0.25)",
-        border: "1px solid #334155",
+        boxShadow: active
+          ? "0 0 0 2px rgba(59,130,246,0.35), 0 4px 14px rgba(0,0,0,0.3)"
+          : "0 2px 10px rgba(0,0,0,0.25)",
+        border: active ? "1px solid #3b82f6" : "1px solid #334155",
+        color: "inherit",
+        cursor: "pointer",
+        textAlign: "left",
+        font: "inherit",
+        transform: active ? "translateY(-2px)" : "translateY(0)",
+        transition: "border-color 160ms ease, box-shadow 160ms ease, transform 160ms ease",
       }}
     >
       <div style={{ color: "#94a3b8", fontSize: 14 }}>{title}</div>
       <div style={{ fontSize: 28, fontWeight: 700, marginTop: 8, color: "#f8fafc" }}>
         {value}
       </div>
-    </div>
+    </button>
   );
 }
 

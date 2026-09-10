@@ -24,3 +24,17 @@ body {
 ::-webkit-scrollbar-thumb:hover {
   background: #475569;
 }
+
+.summary-card:hover {
+  border-color: #64748b !important;
+  transform: translateY(-2px) !important;
+}
+
+.summary-card:focus-visible {
+  outline: 2px solid #60a5fa;
+  outline-offset: 3px;
+}
+
+.summary-card[aria-pressed="true"]:hover {
+  border-color: #60a5fa !important;
+}

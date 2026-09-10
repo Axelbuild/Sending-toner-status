@@ -3,33 +3,106 @@ import { PrinterService } from "../services/printer.service";
 import { PrinterInput } from "../types/printer";
 import { getPrinterStatus } from "../snmp/printer.service";
 import { printerConfigs } from "../config/printers";
+import { runPrinterAutoRecovery } from "../services/printer.auto-recovery.service";
+import { requestRecoveryAbort } from "../state/recovery.state";
 import { prisma } from "../database";
-
+import { detectAndSavePrinterModel, getPrinterCatalog } from "../services/printer.catalog.service";
+import { isValidIP } from "../utils/ip";
 
 const service = new PrinterService();
 
-export async function getPrinterController(req: FastifyRequest, reply: FastifyReply) {
-    const data = await service.findAll();
-    return reply.send(data);
+export async function getPrinterCatalogController(_req: FastifyRequest, reply: FastifyReply) {
+  return reply.send(await getPrinterCatalog());
 }
 
-export async function postCreatePrinterController(req: FastifyRequest<{ Body: PrinterInput }>, reply: FastifyReply) {
-    try {
-        await service.create(req.body);
-        return reply.status(201).send({ message: "created" });
-    } catch (err: any) {
-        return reply.status(400).send({ message: err.message });
+export async function detectPrinterController(
+  req: FastifyRequest<{ Body: { ip?: string } }>, reply: FastifyReply
+) {
+  try {
+    if (!req.body?.ip || !isValidIP(req.body.ip)) {
+      return reply.status(400).send({ message: "Informe um IP válido." });
     }
+    return reply.send(await detectAndSavePrinterModel(req.body.ip));
+  } catch (err: any) {
+    return reply.status(422).send({ message: err.message || "Não foi possível identificar a impressora." });
+  }
 }
 
-export async function getPrinterByIdController(req: any, reply: FastifyReply) {
-    const data = await service.findById(Number(req.params.id));
+export async function getPrinterController(
+  req: FastifyRequest,
+  reply: FastifyReply
+) {
+  const data = await service.findAll();
+  return reply.send(data);
+}
 
-    if (!data) {
-        return reply.status(404).send({ message: "Not found" });
-    }
+export async function postCreatePrinterController(
+  req: FastifyRequest<{ Body: PrinterInput }>,
+  reply: FastifyReply
+) {
+  try {
+    await service.create(req.body);
 
-    return reply.send(data);
+    return reply.status(201).send({
+      message: "created",
+    });
+  } catch (err: any) {
+    return reply.status(400).send({
+      message: err.message || "Erro ao criar impressora",
+    });
+  }
+}
+
+export async function runPrinterRecoveryController(
+  req: FastifyRequest,
+  reply: FastifyReply
+) {
+  try {
+    const result = await runPrinterAutoRecovery();
+
+    return reply.send({
+      message: "Recovery scan finalizado",
+      result,
+    });
+  } catch (err: any) {
+    console.error("Erro ao executar recovery scan:", err);
+
+    return reply.status(500).send({
+      message: err.message || "Erro ao executar recovery scan",
+    });
+  }
+}
+
+export async function cancelPrinterRecoveryController(
+  req: FastifyRequest,
+  reply: FastifyReply
+) {
+  requestRecoveryAbort();
+
+  return reply.send({
+    message: "Cancelamento solicitado.",
+  });
+}
+
+export async function getPrinterByIdController(
+  req: FastifyRequest<{ Params: { id: string } }>,
+  reply: FastifyReply
+) {
+  const id = Number(req.params.id);
+
+  if (!Number.isInteger(id) || id <= 0) {
+    return reply.status(400).send({
+      message: "O ID da impressora deve ser um número inteiro positivo.",
+    });
+  }
+
+  const data = await service.findById(id);
+
+  if (!data) {
+    return reply.status(404).send({ message: "Not found" });
+  }
+
+  return reply.send(data);
 }
 
 export async function getPrinterStatusController(
@@ -48,21 +121,28 @@ export async function getPrinterStatusController(
             model: printer.model,
           });
 
-          return {
-            id: printer.id,
-            name: printer.name,
-            ip: printer.ip,
-            groupId: printer.groupId,
-            online: status.online,
-            ink: status.ink,
-          };
-        } catch (error) {
-          console.error(`Erro ao buscar status da impressora ${printer.name}`, error);
+          const serialNumber = status.serialNumber ?? null;
 
           return {
             id: printer.id,
             name: printer.name,
             ip: printer.ip,
+            serialNumber: printer.serialNumber ?? serialNumber,
+            groupId: printer.groupId,
+            online: status.online,
+            ink: status.ink,
+          };
+        } catch (error) {
+          console.error(
+            `Erro ao buscar status da impressora ${printer.name}`,
+            error
+          );
+
+          return {
+            id: printer.id,
+            name: printer.name,
+            ip: printer.ip,
+            serialNumber: printer.serialNumber ?? null,
             groupId: printer.groupId,
             online: false,
             ink: {},
@@ -74,7 +154,10 @@ export async function getPrinterStatusController(
     return reply.send(result);
   } catch (error) {
     console.error("Erro em /printer/status:", error);
-    return reply.status(500).send({ message: "Erro ao carregar status das impressoras" });
+
+    return reply.status(500).send({
+      message: "Erro ao carregar status das impressoras",
+    });
   }
 }
 
@@ -93,7 +176,10 @@ export async function getLastPrinterStatusController(
     const result = printers.map((printer) => {
       const snapshot = printer.snapshots[0];
 
-      const brandConfig = printerConfigs[printer.brand as "HP" | "Samsung"];
+      const brandConfig = printerConfigs[
+        printer.brand as "HP" | "Samsung"
+      ];
+
       const modelConfig = brandConfig?.models?.[printer.model];
 
       const availableColors = modelConfig
@@ -104,13 +190,24 @@ export async function getLastPrinterStatusController(
         id: printer.id,
         name: printer.name,
         ip: printer.ip,
+        serialNumber: printer.serialNumber ?? null,
         brand: printer.brand,
         model: printer.model,
         type: modelConfig?.type ?? "mono",
         availableColors,
         groupId: printer.groupId,
         groupName: printer.group?.name ?? null,
+
         online: snapshot?.online ?? false,
+
+        status: snapshot?.status ?? "UNKNOWN",
+
+        consecutiveFailures:
+          snapshot?.consecutiveFailures ?? 0,
+
+        lastSeenOnlineAt:
+          snapshot?.lastSeenOnlineAt ?? null,
+
         ink: {
           black: snapshot?.black ?? undefined,
           cyan: snapshot?.cyan ?? undefined,
@@ -123,30 +220,44 @@ export async function getLastPrinterStatusController(
     return reply.send(result);
   } catch (error) {
     console.error("Error loading last printer status:", error);
+
     return reply.status(500).send({
       message: "Error loading last printer status",
     });
   }
 }
 
-export async function updatePrinterController(req: any, reply: FastifyReply) {
+export async function updatePrinterController(
+  req: any,
+  reply: FastifyReply
+) {
   try {
-    const data = await service.update(Number(req.params.id), req.body);
+    const data = await service.update(
+      Number(req.params.id),
+      req.body
+    );
+
     return reply.send(data);
   } catch (err: any) {
     console.error("Error updating printer:", err);
+
     return reply.status(400).send({
       message: err.message || "Error updating printer",
     });
   }
 }
 
-export async function deletePrinterController(req: any, reply: FastifyReply) {
+export async function deletePrinterController(
+  req: any,
+  reply: FastifyReply
+) {
   try {
     const data = await service.delete(Number(req.params.id));
+
     return reply.send(data);
   } catch (err: any) {
     console.error("Error deleting printer:", err);
+
     return reply.status(400).send({
       message: err.message || "Error deleting printer",
     });

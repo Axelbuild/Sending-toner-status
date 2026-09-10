@@ -52,6 +52,16 @@ export type Printers = Prisma.PrintersModel
  */
 export type Group = Prisma.GroupModel
 /**
+ * Model DiscoveredPrinterModel
+ * 
+ */
+export type DiscoveredPrinterModel = Prisma.DiscoveredPrinterModelModel
+/**
+ * Model PrinterIpHistory
+ * 
+ */
+export type PrinterIpHistory = Prisma.PrinterIpHistoryModel
+/**
  * Model PrinterAlertState
  * 
  */

@@ -80,12 +80,12 @@ export type PrismaVersion = {
 }
 
 /**
- * Prisma Client JS version: 7.7.0
- * Query Engine version: 75cbdc1eb7150937890ad5465d861175c6624711
+ * Prisma Client JS version: 7.8.0
+ * Query Engine version: 3c6e192761c0362d496ed980de936e2f3cebcd3a
  */
 export const prismaVersion: PrismaVersion = {
-  client: "7.7.0",
-  engine: "75cbdc1eb7150937890ad5465d861175c6624711"
+  client: "7.8.0",
+  engine: "3c6e192761c0362d496ed980de936e2f3cebcd3a"
 }
 
 /**
@@ -386,6 +386,8 @@ type FieldRefInputType<Model, FieldType> = Model extends never ? never : FieldRe
 export const ModelName = {
   Printers: 'Printers',
   Group: 'Group',
+  DiscoveredPrinterModel: 'DiscoveredPrinterModel',
+  PrinterIpHistory: 'PrinterIpHistory',
   PrinterAlertState: 'PrinterAlertState',
   PrinterStatusSnapshot: 'PrinterStatusSnapshot'
 } as const
@@ -403,7 +405,7 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
     omit: GlobalOmitOptions
   }
   meta: {
-    modelProps: "printers" | "group" | "printerAlertState" | "printerStatusSnapshot"
+    modelProps: "printers" | "group" | "discoveredPrinterModel" | "printerIpHistory" | "printerAlertState" | "printerStatusSnapshot"
     txIsolationLevel: TransactionIsolationLevel
   }
   model: {
@@ -552,6 +554,154 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
         count: {
           args: Prisma.GroupCountArgs<ExtArgs>
           result: runtime.Types.Utils.Optional<Prisma.GroupCountAggregateOutputType> | number
+        }
+      }
+    }
+    DiscoveredPrinterModel: {
+      payload: Prisma.$DiscoveredPrinterModelPayload<ExtArgs>
+      fields: Prisma.DiscoveredPrinterModelFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.DiscoveredPrinterModelFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$DiscoveredPrinterModelPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.DiscoveredPrinterModelFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$DiscoveredPrinterModelPayload>
+        }
+        findFirst: {
+          args: Prisma.DiscoveredPrinterModelFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$DiscoveredPrinterModelPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.DiscoveredPrinterModelFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$DiscoveredPrinterModelPayload>
+        }
+        findMany: {
+          args: Prisma.DiscoveredPrinterModelFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$DiscoveredPrinterModelPayload>[]
+        }
+        create: {
+          args: Prisma.DiscoveredPrinterModelCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$DiscoveredPrinterModelPayload>
+        }
+        createMany: {
+          args: Prisma.DiscoveredPrinterModelCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.DiscoveredPrinterModelCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$DiscoveredPrinterModelPayload>[]
+        }
+        delete: {
+          args: Prisma.DiscoveredPrinterModelDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$DiscoveredPrinterModelPayload>
+        }
+        update: {
+          args: Prisma.DiscoveredPrinterModelUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$DiscoveredPrinterModelPayload>
+        }
+        deleteMany: {
+          args: Prisma.DiscoveredPrinterModelDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.DiscoveredPrinterModelUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.DiscoveredPrinterModelUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$DiscoveredPrinterModelPayload>[]
+        }
+        upsert: {
+          args: Prisma.DiscoveredPrinterModelUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$DiscoveredPrinterModelPayload>
+        }
+        aggregate: {
+          args: Prisma.DiscoveredPrinterModelAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateDiscoveredPrinterModel>
+        }
+        groupBy: {
+          args: Prisma.DiscoveredPrinterModelGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.DiscoveredPrinterModelGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.DiscoveredPrinterModelCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.DiscoveredPrinterModelCountAggregateOutputType> | number
+        }
+      }
+    }
+    PrinterIpHistory: {
+      payload: Prisma.$PrinterIpHistoryPayload<ExtArgs>
+      fields: Prisma.PrinterIpHistoryFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.PrinterIpHistoryFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PrinterIpHistoryPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.PrinterIpHistoryFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PrinterIpHistoryPayload>
+        }
+        findFirst: {
+          args: Prisma.PrinterIpHistoryFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PrinterIpHistoryPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.PrinterIpHistoryFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PrinterIpHistoryPayload>
+        }
+        findMany: {
+          args: Prisma.PrinterIpHistoryFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PrinterIpHistoryPayload>[]
+        }
+        create: {
+          args: Prisma.PrinterIpHistoryCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PrinterIpHistoryPayload>
+        }
+        createMany: {
+          args: Prisma.PrinterIpHistoryCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.PrinterIpHistoryCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PrinterIpHistoryPayload>[]
+        }
+        delete: {
+          args: Prisma.PrinterIpHistoryDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PrinterIpHistoryPayload>
+        }
+        update: {
+          args: Prisma.PrinterIpHistoryUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PrinterIpHistoryPayload>
+        }
+        deleteMany: {
+          args: Prisma.PrinterIpHistoryDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.PrinterIpHistoryUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.PrinterIpHistoryUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PrinterIpHistoryPayload>[]
+        }
+        upsert: {
+          args: Prisma.PrinterIpHistoryUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PrinterIpHistoryPayload>
+        }
+        aggregate: {
+          args: Prisma.PrinterIpHistoryAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregatePrinterIpHistory>
+        }
+        groupBy: {
+          args: Prisma.PrinterIpHistoryGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.PrinterIpHistoryGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.PrinterIpHistoryCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.PrinterIpHistoryCountAggregateOutputType> | number
         }
       }
     }
@@ -747,6 +897,9 @@ export const PrintersScalarFieldEnum = {
   name: 'name',
   ip: 'ip',
   serialNumber: 'serialNumber',
+  serialAlertSent: 'serialAlertSent',
+  lastRecoveryAttemptAt: 'lastRecoveryAttemptAt',
+  recoveryAttempts: 'recoveryAttempts',
   brand: 'brand',
   model: 'model',
   groupId: 'groupId',
@@ -762,6 +915,29 @@ export const GroupScalarFieldEnum = {
 } as const
 
 export type GroupScalarFieldEnum = (typeof GroupScalarFieldEnum)[keyof typeof GroupScalarFieldEnum]
+
+
+export const DiscoveredPrinterModelScalarFieldEnum = {
+  id: 'id',
+  brand: 'brand',
+  model: 'model',
+  sysObjectId: 'sysObjectId',
+  createdAt: 'createdAt'
+} as const
+
+export type DiscoveredPrinterModelScalarFieldEnum = (typeof DiscoveredPrinterModelScalarFieldEnum)[keyof typeof DiscoveredPrinterModelScalarFieldEnum]
+
+
+export const PrinterIpHistoryScalarFieldEnum = {
+  id: 'id',
+  printerId: 'printerId',
+  oldIp: 'oldIp',
+  newIp: 'newIp',
+  serialNumber: 'serialNumber',
+  createdAt: 'createdAt'
+} as const
+
+export type PrinterIpHistoryScalarFieldEnum = (typeof PrinterIpHistoryScalarFieldEnum)[keyof typeof PrinterIpHistoryScalarFieldEnum]
 
 
 export const PrinterAlertStateScalarFieldEnum = {
@@ -783,6 +959,9 @@ export const PrinterStatusSnapshotScalarFieldEnum = {
   id: 'id',
   printerId: 'printerId',
   online: 'online',
+  status: 'status',
+  consecutiveFailures: 'consecutiveFailures',
+  lastSeenOnlineAt: 'lastSeenOnlineAt',
   black: 'black',
   cyan: 'cyan',
   magenta: 'magenta',
@@ -853,6 +1032,13 @@ export type ListStringFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaMod
 
 
 /**
+ * Reference to a field of type 'Boolean'
+ */
+export type BooleanFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Boolean'>
+    
+
+
+/**
  * Reference to a field of type 'DateTime'
  */
 export type DateTimeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'DateTime'>
@@ -863,13 +1049,6 @@ export type DateTimeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel
  * Reference to a field of type 'DateTime[]'
  */
 export type ListDateTimeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'DateTime[]'>
-    
-
-
-/**
- * Reference to a field of type 'Boolean'
- */
-export type BooleanFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Boolean'>
     
 
 
@@ -979,10 +1158,27 @@ export type PrismaClientOptions = ({
    * ```
    */
   comments?: runtime.SqlCommenterPlugin[]
+  /**
+   * Optional maximum size for the query plan cache. If not provided, a default size will be used.
+   * A value of `0` can be used to disable the cache entirely. A higher cache size can improve
+   * performance for applications that execute a large number of unique queries, while a smaller
+   * cache size can reduce memory usage.
+   * 
+   * @example
+   * ```
+   * const prisma = new PrismaClient({
+   *   adapter,
+   *   queryPlanCacheMaxSize: 100,
+   * })
+   * ```
+   */
+  queryPlanCacheMaxSize?: number
 }
 export type GlobalOmitConfig = {
   printers?: Prisma.PrintersOmit
   group?: Prisma.GroupOmit
+  discoveredPrinterModel?: Prisma.DiscoveredPrinterModelOmit
+  printerIpHistory?: Prisma.PrinterIpHistoryOmit
   printerAlertState?: Prisma.PrinterAlertStateOmit
   printerStatusSnapshot?: Prisma.PrinterStatusSnapshotOmit
 }

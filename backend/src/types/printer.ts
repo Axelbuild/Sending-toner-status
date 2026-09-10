@@ -8,6 +8,7 @@ export type PrinterInkLevels = {
 export type PrinterStatus = {
   ip: string;
   online: boolean;
+  serialNumber?: string | null;
   ink: PrinterInkLevels;
 };
 
@@ -26,4 +27,11 @@ export type PrinterSNMPTarget = {
   ip: string;
   brand: PrinterBrand;
   model: string;
+};
+
+export type PrinterIdentity = {
+  brand: PrinterBrand;
+  model: string;
+  sysDescr: string;
+  sysObjectId?: string;
 };

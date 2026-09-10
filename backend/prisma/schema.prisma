@@ -8,25 +8,52 @@ datasource db {
 }
 
 model Printers {
-  id           Int                     @id @default(autoincrement())
-  name         String
-  ip           String                  @unique
-  serialNumber String?
-  brand        String
-  model        String
-  groupId      Int
-  createdAt    DateTime                @default(now())
+  id                    Int      @id @default(autoincrement())
+  name                  String
+  ip                    String   @unique
+  serialNumber          String?
+  serialAlertSent       Boolean  @default(false)
+  lastRecoveryAttemptAt DateTime?
+  recoveryAttempts      Int      @default(0)
+  brand                 String
+  model                 String
+  groupId               Int
+  createdAt             DateTime @default(now())
 
-  group        Group                   @relation(fields: [groupId], references: [id])
-  alerts       PrinterAlertState[]
-  snapshots    PrinterStatusSnapshot[]
+  group     Group                   @relation(fields: [groupId], references: [id])
+  ipHistory PrinterIpHistory[]
+  alerts    PrinterAlertState[]
+  snapshots PrinterStatusSnapshot[]
 }
+
 
 model Group {
   id       Int        @id @default(autoincrement())
   name     String     @unique
   printers Printers[]
 }
+
+model DiscoveredPrinterModel {
+  id          Int      @id @default(autoincrement())
+  brand       String
+  model       String
+  sysObjectId String?
+  createdAt   DateTime @default(now())
+
+  @@unique([brand, model])
+}
+
+model PrinterIpHistory {
+  id           Int      @id @default(autoincrement())
+  printerId    Int
+  oldIp        String
+  newIp        String
+  serialNumber String
+  createdAt    DateTime @default(now())
+
+  printer Printers @relation(fields: [printerId], references: [id])
+}
+
 
 model PrinterAlertState {
   id                Int       @id @default(autoincrement())
@@ -45,15 +72,18 @@ model PrinterAlertState {
 }
 
 model PrinterStatusSnapshot {
-  id        Int      @id @default(autoincrement())
-  printerId Int      @unique
-  online    Boolean
-  black     Int?
-  cyan      Int?
-  magenta   Int?
-  yellow    Int?
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  id                  Int      @id @default(autoincrement())
+  printerId           Int      @unique
+  online              Boolean
+  status              String   @default("UNKNOWN")
+  consecutiveFailures Int      @default(0)
+  lastSeenOnlineAt    DateTime?
+  black               Int?
+  cyan                Int?
+  magenta             Int?
+  yellow              Int?
+  createdAt           DateTime @default(now())
+  updatedAt           DateTime @updatedAt
 
-  printer   Printers @relation(fields: [printerId], references: [id])
+  printer Printers @relation(fields: [printerId], references: [id])
 }

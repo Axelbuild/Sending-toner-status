@@ -12,6 +12,38 @@ function chunkArray<T>(items: T[], size: number): T[][] {
   return chunks;
 }
 
+function resolvePrinterHealthStatus(params: {
+  isOnlineNow: boolean;
+  currentFailures: number;
+}) {
+  if (params.isOnlineNow) {
+    return {
+      online: true,
+      status: "ONLINE",
+      consecutiveFailures: 0,
+      lastSeenOnlineAt: new Date(),
+    };
+  }
+
+  const failures = params.currentFailures + 1;
+
+  if (failures >= 3) {
+    return {
+      online: false,
+      status: "OFFLINE",
+      consecutiveFailures: failures,
+      lastSeenOnlineAt: undefined,
+    };
+  }
+
+  return {
+    online: true,
+    status: "SUSPECT",
+    consecutiveFailures: failures,
+    lastSeenOnlineAt: undefined,
+  };
+}
+
 export async function checkPrinters() {
   const printers = await prisma.printers.findMany();
 
@@ -27,6 +59,24 @@ export async function checkPrinters() {
             model: printer.model,
           });
 
+          const currentSerial = printer.serialNumber?.trim();
+          const detectedSerial = status.serialNumber?.trim();
+
+          if (detectedSerial && !currentSerial) {
+            await prisma.printers.update({
+              where: { id: printer.id },
+              data: {
+                serialNumber: detectedSerial,
+              },
+            });
+
+            console.log("Serial number atualizado:", {
+              printer: printer.name,
+              ip: printer.ip,
+              serialNumber: detectedSerial,
+            });
+          }
+
           console.log("Printer status:", {
             name: printer.name,
             ip: printer.ip,
@@ -35,28 +85,56 @@ export async function checkPrinters() {
             status,
           });
 
+          const currentSnapshot = await prisma.printerStatusSnapshot.findUnique({
+            where: {
+              printerId: printer.id,
+            },
+          });
+
+          const health = resolvePrinterHealthStatus({
+            isOnlineNow: status.online,
+            currentFailures: currentSnapshot?.consecutiveFailures ?? 0,
+          });
+
           await prisma.printerStatusSnapshot.upsert({
             where: {
               printerId: printer.id,
             },
             update: {
-              online: status.online,
-              black: status.ink.black,
-              cyan: status.ink.cyan,
-              magenta: status.ink.magenta,
-              yellow: status.ink.yellow,
+              online: health.online,
+              status: health.status,
+              consecutiveFailures: health.consecutiveFailures,
+              lastSeenOnlineAt:
+                health.lastSeenOnlineAt ??
+                currentSnapshot?.lastSeenOnlineAt ??
+                null,
+              black: status.online
+                ? status.ink.black
+                : currentSnapshot?.black ?? null,
+              cyan: status.online
+                ? status.ink.cyan
+                : currentSnapshot?.cyan ?? null,
+              magenta: status.online
+                ? status.ink.magenta
+                : currentSnapshot?.magenta ?? null,
+              yellow: status.online
+                ? status.ink.yellow
+                : currentSnapshot?.yellow ?? null,
             },
             create: {
               printerId: printer.id,
-              online: status.online,
-              black: status.ink.black,
-              cyan: status.ink.cyan,
-              magenta: status.ink.magenta,
-              yellow: status.ink.yellow,
+              online: health.online,
+              status: health.status,
+              consecutiveFailures: health.consecutiveFailures,
+              lastSeenOnlineAt: health.lastSeenOnlineAt ?? null,
+              black: status.online ? status.ink.black : null,
+              cyan: status.online ? status.ink.cyan : null,
+              magenta: status.online ? status.ink.magenta : null,
+              yellow: status.online ? status.ink.yellow : null,
             },
           });
 
-          if (!status.online) return;
+          if (health.status !== "ONLINE") return;
 
           await processPrinterAlerts(
             {
@@ -74,20 +152,37 @@ export async function checkPrinters() {
             error
           );
 
+          const currentSnapshot = await prisma.printerStatusSnapshot.findUnique({
+            where: {
+              printerId: printer.id,
+            },
+          });
+
+          const health = resolvePrinterHealthStatus({
+            isOnlineNow: false,
+            currentFailures: currentSnapshot?.consecutiveFailures ?? 0,
+          });
+
           await prisma.printerStatusSnapshot.upsert({
             where: {
               printerId: printer.id,
             },
             update: {
-              online: false,
-              black: null,
-              cyan: null,
-              magenta: null,
-              yellow: null,
+              online: health.online,
+              status: health.status,
+              consecutiveFailures: health.consecutiveFailures,
+              lastSeenOnlineAt: currentSnapshot?.lastSeenOnlineAt ?? null,
+              black: currentSnapshot?.black ?? null,
+              cyan: currentSnapshot?.cyan ?? null,
+              magenta: currentSnapshot?.magenta ?? null,
+              yellow: currentSnapshot?.yellow ?? null,
             },
             create: {
               printerId: printer.id,
-              online: false,
+              online: health.online,
+              status: health.status,
+              consecutiveFailures: health.consecutiveFailures,
+              lastSeenOnlineAt: null,
               black: null,
               cyan: null,
               magenta: null,

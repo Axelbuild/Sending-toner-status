@@ -29,6 +29,7 @@ export type AggregatePrinterStatusSnapshot = {
 export type PrinterStatusSnapshotAvgAggregateOutputType = {
   id: number | null
   printerId: number | null
+  consecutiveFailures: number | null
   black: number | null
   cyan: number | null
   magenta: number | null
@@ -38,6 +39,7 @@ export type PrinterStatusSnapshotAvgAggregateOutputType = {
 export type PrinterStatusSnapshotSumAggregateOutputType = {
   id: number | null
   printerId: number | null
+  consecutiveFailures: number | null
   black: number | null
   cyan: number | null
   magenta: number | null
@@ -48,6 +50,9 @@ export type PrinterStatusSnapshotMinAggregateOutputType = {
   id: number | null
   printerId: number | null
   online: boolean | null
+  status: string | null
+  consecutiveFailures: number | null
+  lastSeenOnlineAt: Date | null
   black: number | null
   cyan: number | null
   magenta: number | null
@@ -60,6 +65,9 @@ export type PrinterStatusSnapshotMaxAggregateOutputType = {
   id: number | null
   printerId: number | null
   online: boolean | null
+  status: string | null
+  consecutiveFailures: number | null
+  lastSeenOnlineAt: Date | null
   black: number | null
   cyan: number | null
   magenta: number | null
@@ -72,6 +80,9 @@ export type PrinterStatusSnapshotCountAggregateOutputType = {
   id: number
   printerId: number
   online: number
+  status: number
+  consecutiveFailures: number
+  lastSeenOnlineAt: number
   black: number
   cyan: number
   magenta: number
@@ -85,6 +96,7 @@ export type PrinterStatusSnapshotCountAggregateOutputType = {
 export type PrinterStatusSnapshotAvgAggregateInputType = {
   id?: true
   printerId?: true
+  consecutiveFailures?: true
   black?: true
   cyan?: true
   magenta?: true
@@ -94,6 +106,7 @@ export type PrinterStatusSnapshotAvgAggregateInputType = {
 export type PrinterStatusSnapshotSumAggregateInputType = {
   id?: true
   printerId?: true
+  consecutiveFailures?: true
   black?: true
   cyan?: true
   magenta?: true
@@ -104,6 +117,9 @@ export type PrinterStatusSnapshotMinAggregateInputType = {
   id?: true
   printerId?: true
   online?: true
+  status?: true
+  consecutiveFailures?: true
+  lastSeenOnlineAt?: true
   black?: true
   cyan?: true
   magenta?: true
@@ -116,6 +132,9 @@ export type PrinterStatusSnapshotMaxAggregateInputType = {
   id?: true
   printerId?: true
   online?: true
+  status?: true
+  consecutiveFailures?: true
+  lastSeenOnlineAt?: true
   black?: true
   cyan?: true
   magenta?: true
@@ -128,6 +147,9 @@ export type PrinterStatusSnapshotCountAggregateInputType = {
   id?: true
   printerId?: true
   online?: true
+  status?: true
+  consecutiveFailures?: true
+  lastSeenOnlineAt?: true
   black?: true
   cyan?: true
   magenta?: true
@@ -227,6 +249,9 @@ export type PrinterStatusSnapshotGroupByOutputType = {
   id: number
   printerId: number
   online: boolean
+  status: string
+  consecutiveFailures: number
+  lastSeenOnlineAt: Date | null
   black: number | null
   cyan: number | null
   magenta: number | null
@@ -262,6 +287,9 @@ export type PrinterStatusSnapshotWhereInput = {
   id?: Prisma.IntFilter<"PrinterStatusSnapshot"> | number
   printerId?: Prisma.IntFilter<"PrinterStatusSnapshot"> | number
   online?: Prisma.BoolFilter<"PrinterStatusSnapshot"> | boolean
+  status?: Prisma.StringFilter<"PrinterStatusSnapshot"> | string
+  consecutiveFailures?: Prisma.IntFilter<"PrinterStatusSnapshot"> | number
+  lastSeenOnlineAt?: Prisma.DateTimeNullableFilter<"PrinterStatusSnapshot"> | Date | string | null
   black?: Prisma.IntNullableFilter<"PrinterStatusSnapshot"> | number | null
   cyan?: Prisma.IntNullableFilter<"PrinterStatusSnapshot"> | number | null
   magenta?: Prisma.IntNullableFilter<"PrinterStatusSnapshot"> | number | null
@@ -275,6 +303,9 @@ export type PrinterStatusSnapshotOrderByWithRelationInput = {
   id?: Prisma.SortOrder
   printerId?: Prisma.SortOrder
   online?: Prisma.SortOrder
+  status?: Prisma.SortOrder
+  consecutiveFailures?: Prisma.SortOrder
+  lastSeenOnlineAt?: Prisma.SortOrderInput | Prisma.SortOrder
   black?: Prisma.SortOrderInput | Prisma.SortOrder
   cyan?: Prisma.SortOrderInput | Prisma.SortOrder
   magenta?: Prisma.SortOrderInput | Prisma.SortOrder
@@ -291,6 +322,9 @@ export type PrinterStatusSnapshotWhereUniqueInput = Prisma.AtLeast<{
   OR?: Prisma.PrinterStatusSnapshotWhereInput[]
   NOT?: Prisma.PrinterStatusSnapshotWhereInput | Prisma.PrinterStatusSnapshotWhereInput[]
   online?: Prisma.BoolFilter<"PrinterStatusSnapshot"> | boolean
+  status?: Prisma.StringFilter<"PrinterStatusSnapshot"> | string
+  consecutiveFailures?: Prisma.IntFilter<"PrinterStatusSnapshot"> | number
+  lastSeenOnlineAt?: Prisma.DateTimeNullableFilter<"PrinterStatusSnapshot"> | Date | string | null
   black?: Prisma.IntNullableFilter<"PrinterStatusSnapshot"> | number | null
   cyan?: Prisma.IntNullableFilter<"PrinterStatusSnapshot"> | number | null
   magenta?: Prisma.IntNullableFilter<"PrinterStatusSnapshot"> | number | null
@@ -304,6 +338,9 @@ export type PrinterStatusSnapshotOrderByWithAggregationInput = {
   id?: Prisma.SortOrder
   printerId?: Prisma.SortOrder
   online?: Prisma.SortOrder
+  status?: Prisma.SortOrder
+  consecutiveFailures?: Prisma.SortOrder
+  lastSeenOnlineAt?: Prisma.SortOrderInput | Prisma.SortOrder
   black?: Prisma.SortOrderInput | Prisma.SortOrder
   cyan?: Prisma.SortOrderInput | Prisma.SortOrder
   magenta?: Prisma.SortOrderInput | Prisma.SortOrder
@@ -324,6 +361,9 @@ export type PrinterStatusSnapshotScalarWhereWithAggregatesInput = {
   id?: Prisma.IntWithAggregatesFilter<"PrinterStatusSnapshot"> | number
   printerId?: Prisma.IntWithAggregatesFilter<"PrinterStatusSnapshot"> | number
   online?: Prisma.BoolWithAggregatesFilter<"PrinterStatusSnapshot"> | boolean
+  status?: Prisma.StringWithAggregatesFilter<"PrinterStatusSnapshot"> | string
+  consecutiveFailures?: Prisma.IntWithAggregatesFilter<"PrinterStatusSnapshot"> | number
+  lastSeenOnlineAt?: Prisma.DateTimeNullableWithAggregatesFilter<"PrinterStatusSnapshot"> | Date | string | null
   black?: Prisma.IntNullableWithAggregatesFilter<"PrinterStatusSnapshot"> | number | null
   cyan?: Prisma.IntNullableWithAggregatesFilter<"PrinterStatusSnapshot"> | number | null
   magenta?: Prisma.IntNullableWithAggregatesFilter<"PrinterStatusSnapshot"> | number | null
@@ -334,6 +374,9 @@ export type PrinterStatusSnapshotScalarWhereWithAggregatesInput = {
 
 export type PrinterStatusSnapshotCreateInput = {
   online: boolean
+  status?: string
+  consecutiveFailures?: number
+  lastSeenOnlineAt?: Date | string | null
   black?: number | null
   cyan?: number | null
   magenta?: number | null
@@ -347,6 +390,9 @@ export type PrinterStatusSnapshotUncheckedCreateInput = {
   id?: number
   printerId: number
   online: boolean
+  status?: string
+  consecutiveFailures?: number
+  lastSeenOnlineAt?: Date | string | null
   black?: number | null
   cyan?: number | null
   magenta?: number | null
@@ -357,6 +403,9 @@ export type PrinterStatusSnapshotUncheckedCreateInput = {
 
 export type PrinterStatusSnapshotUpdateInput = {
   online?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  status?: Prisma.StringFieldUpdateOperationsInput | string
+  consecutiveFailures?: Prisma.IntFieldUpdateOperationsInput | number
+  lastSeenOnlineAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   black?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   cyan?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   magenta?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
@@ -370,6 +419,9 @@ export type PrinterStatusSnapshotUncheckedUpdateInput = {
   id?: Prisma.IntFieldUpdateOperationsInput | number
   printerId?: Prisma.IntFieldUpdateOperationsInput | number
   online?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  status?: Prisma.StringFieldUpdateOperationsInput | string
+  consecutiveFailures?: Prisma.IntFieldUpdateOperationsInput | number
+  lastSeenOnlineAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   black?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   cyan?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   magenta?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
@@ -382,6 +434,9 @@ export type PrinterStatusSnapshotCreateManyInput = {
   id?: number
   printerId: number
   online: boolean
+  status?: string
+  consecutiveFailures?: number
+  lastSeenOnlineAt?: Date | string | null
   black?: number | null
   cyan?: number | null
   magenta?: number | null
@@ -392,6 +447,9 @@ export type PrinterStatusSnapshotCreateManyInput = {
 
 export type PrinterStatusSnapshotUpdateManyMutationInput = {
   online?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  status?: Prisma.StringFieldUpdateOperationsInput | string
+  consecutiveFailures?: Prisma.IntFieldUpdateOperationsInput | number
+  lastSeenOnlineAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   black?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   cyan?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   magenta?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
@@ -404,6 +462,9 @@ export type PrinterStatusSnapshotUncheckedUpdateManyInput = {
   id?: Prisma.IntFieldUpdateOperationsInput | number
   printerId?: Prisma.IntFieldUpdateOperationsInput | number
   online?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  status?: Prisma.StringFieldUpdateOperationsInput | string
+  consecutiveFailures?: Prisma.IntFieldUpdateOperationsInput | number
+  lastSeenOnlineAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   black?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   cyan?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   magenta?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
@@ -426,6 +487,9 @@ export type PrinterStatusSnapshotCountOrderByAggregateInput = {
   id?: Prisma.SortOrder
   printerId?: Prisma.SortOrder
   online?: Prisma.SortOrder
+  status?: Prisma.SortOrder
+  consecutiveFailures?: Prisma.SortOrder
+  lastSeenOnlineAt?: Prisma.SortOrder
   black?: Prisma.SortOrder
   cyan?: Prisma.SortOrder
   magenta?: Prisma.SortOrder
@@ -437,6 +501,7 @@ export type PrinterStatusSnapshotCountOrderByAggregateInput = {
 export type PrinterStatusSnapshotAvgOrderByAggregateInput = {
   id?: Prisma.SortOrder
   printerId?: Prisma.SortOrder
+  consecutiveFailures?: Prisma.SortOrder
   black?: Prisma.SortOrder
   cyan?: Prisma.SortOrder
   magenta?: Prisma.SortOrder
@@ -447,6 +512,9 @@ export type PrinterStatusSnapshotMaxOrderByAggregateInput = {
   id?: Prisma.SortOrder
   printerId?: Prisma.SortOrder
   online?: Prisma.SortOrder
+  status?: Prisma.SortOrder
+  consecutiveFailures?: Prisma.SortOrder
+  lastSeenOnlineAt?: Prisma.SortOrder
   black?: Prisma.SortOrder
   cyan?: Prisma.SortOrder
   magenta?: Prisma.SortOrder
@@ -459,6 +527,9 @@ export type PrinterStatusSnapshotMinOrderByAggregateInput = {
   id?: Prisma.SortOrder
   printerId?: Prisma.SortOrder
   online?: Prisma.SortOrder
+  status?: Prisma.SortOrder
+  consecutiveFailures?: Prisma.SortOrder
+  lastSeenOnlineAt?: Prisma.SortOrder
   black?: Prisma.SortOrder
   cyan?: Prisma.SortOrder
   magenta?: Prisma.SortOrder
@@ -470,6 +541,7 @@ export type PrinterStatusSnapshotMinOrderByAggregateInput = {
 export type PrinterStatusSnapshotSumOrderByAggregateInput = {
   id?: Prisma.SortOrder
   printerId?: Prisma.SortOrder
+  consecutiveFailures?: Prisma.SortOrder
   black?: Prisma.SortOrder
   cyan?: Prisma.SortOrder
   magenta?: Prisma.SortOrder
@@ -520,6 +592,9 @@ export type PrinterStatusSnapshotUncheckedUpdateManyWithoutPrinterNestedInput = 
 
 export type PrinterStatusSnapshotCreateWithoutPrinterInput = {
   online: boolean
+  status?: string
+  consecutiveFailures?: number
+  lastSeenOnlineAt?: Date | string | null
   black?: number | null
   cyan?: number | null
   magenta?: number | null
@@ -531,6 +606,9 @@ export type PrinterStatusSnapshotCreateWithoutPrinterInput = {
 export type PrinterStatusSnapshotUncheckedCreateWithoutPrinterInput = {
   id?: number
   online: boolean
+  status?: string
+  consecutiveFailures?: number
+  lastSeenOnlineAt?: Date | string | null
   black?: number | null
   cyan?: number | null
   magenta?: number | null
@@ -572,6 +650,9 @@ export type PrinterStatusSnapshotScalarWhereInput = {
   id?: Prisma.IntFilter<"PrinterStatusSnapshot"> | number
   printerId?: Prisma.IntFilter<"PrinterStatusSnapshot"> | number
   online?: Prisma.BoolFilter<"PrinterStatusSnapshot"> | boolean
+  status?: Prisma.StringFilter<"PrinterStatusSnapshot"> | string
+  consecutiveFailures?: Prisma.IntFilter<"PrinterStatusSnapshot"> | number
+  lastSeenOnlineAt?: Prisma.DateTimeNullableFilter<"PrinterStatusSnapshot"> | Date | string | null
   black?: Prisma.IntNullableFilter<"PrinterStatusSnapshot"> | number | null
   cyan?: Prisma.IntNullableFilter<"PrinterStatusSnapshot"> | number | null
   magenta?: Prisma.IntNullableFilter<"PrinterStatusSnapshot"> | number | null
@@ -583,6 +664,9 @@ export type PrinterStatusSnapshotScalarWhereInput = {
 export type PrinterStatusSnapshotCreateManyPrinterInput = {
   id?: number
   online: boolean
+  status?: string
+  consecutiveFailures?: number
+  lastSeenOnlineAt?: Date | string | null
   black?: number | null
   cyan?: number | null
   magenta?: number | null
@@ -593,6 +677,9 @@ export type PrinterStatusSnapshotCreateManyPrinterInput = {
 
 export type PrinterStatusSnapshotUpdateWithoutPrinterInput = {
   online?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  status?: Prisma.StringFieldUpdateOperationsInput | string
+  consecutiveFailures?: Prisma.IntFieldUpdateOperationsInput | number
+  lastSeenOnlineAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   black?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   cyan?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   magenta?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
@@ -604,6 +691,9 @@ export type PrinterStatusSnapshotUpdateWithoutPrinterInput = {
 export type PrinterStatusSnapshotUncheckedUpdateWithoutPrinterInput = {
   id?: Prisma.IntFieldUpdateOperationsInput | number
   online?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  status?: Prisma.StringFieldUpdateOperationsInput | string
+  consecutiveFailures?: Prisma.IntFieldUpdateOperationsInput | number
+  lastSeenOnlineAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   black?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   cyan?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   magenta?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
@@ -615,6 +705,9 @@ export type PrinterStatusSnapshotUncheckedUpdateWithoutPrinterInput = {
 export type PrinterStatusSnapshotUncheckedUpdateManyWithoutPrinterInput = {
   id?: Prisma.IntFieldUpdateOperationsInput | number
   online?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  status?: Prisma.StringFieldUpdateOperationsInput | string
+  consecutiveFailures?: Prisma.IntFieldUpdateOperationsInput | number
+  lastSeenOnlineAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   black?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   cyan?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   magenta?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
@@ -629,6 +722,9 @@ export type PrinterStatusSnapshotSelect<ExtArgs extends runtime.Types.Extensions
   id?: boolean
   printerId?: boolean
   online?: boolean
+  status?: boolean
+  consecutiveFailures?: boolean
+  lastSeenOnlineAt?: boolean
   black?: boolean
   cyan?: boolean
   magenta?: boolean
@@ -642,6 +738,9 @@ export type PrinterStatusSnapshotSelectCreateManyAndReturn<ExtArgs extends runti
   id?: boolean
   printerId?: boolean
   online?: boolean
+  status?: boolean
+  consecutiveFailures?: boolean
+  lastSeenOnlineAt?: boolean
   black?: boolean
   cyan?: boolean
   magenta?: boolean
@@ -655,6 +754,9 @@ export type PrinterStatusSnapshotSelectUpdateManyAndReturn<ExtArgs extends runti
   id?: boolean
   printerId?: boolean
   online?: boolean
+  status?: boolean
+  consecutiveFailures?: boolean
+  lastSeenOnlineAt?: boolean
   black?: boolean
   cyan?: boolean
   magenta?: boolean
@@ -668,6 +770,9 @@ export type PrinterStatusSnapshotSelectScalar = {
   id?: boolean
   printerId?: boolean
   online?: boolean
+  status?: boolean
+  consecutiveFailures?: boolean
+  lastSeenOnlineAt?: boolean
   black?: boolean
   cyan?: boolean
   magenta?: boolean
@@ -676,7 +781,7 @@ export type PrinterStatusSnapshotSelectScalar = {
   updatedAt?: boolean
 }
 
-export type PrinterStatusSnapshotOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "printerId" | "online" | "black" | "cyan" | "magenta" | "yellow" | "createdAt" | "updatedAt", ExtArgs["result"]["printerStatusSnapshot"]>
+export type PrinterStatusSnapshotOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "printerId" | "online" | "status" | "consecutiveFailures" | "lastSeenOnlineAt" | "black" | "cyan" | "magenta" | "yellow" | "createdAt" | "updatedAt", ExtArgs["result"]["printerStatusSnapshot"]>
 export type PrinterStatusSnapshotInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   printer?: boolean | Prisma.PrintersDefaultArgs<ExtArgs>
 }
@@ -696,6 +801,9 @@ export type $PrinterStatusSnapshotPayload<ExtArgs extends runtime.Types.Extensio
     id: number
     printerId: number
     online: boolean
+    status: string
+    consecutiveFailures: number
+    lastSeenOnlineAt: Date | null
     black: number | null
     cyan: number | null
     magenta: number | null
@@ -1129,6 +1237,9 @@ export interface PrinterStatusSnapshotFieldRefs {
   readonly id: Prisma.FieldRef<"PrinterStatusSnapshot", 'Int'>
   readonly printerId: Prisma.FieldRef<"PrinterStatusSnapshot", 'Int'>
   readonly online: Prisma.FieldRef<"PrinterStatusSnapshot", 'Boolean'>
+  readonly status: Prisma.FieldRef<"PrinterStatusSnapshot", 'String'>
+  readonly consecutiveFailures: Prisma.FieldRef<"PrinterStatusSnapshot", 'Int'>
+  readonly lastSeenOnlineAt: Prisma.FieldRef<"PrinterStatusSnapshot", 'DateTime'>
   readonly black: Prisma.FieldRef<"PrinterStatusSnapshot", 'Int'>
   readonly cyan: Prisma.FieldRef<"PrinterStatusSnapshot", 'Int'>
   readonly magenta: Prisma.FieldRef<"PrinterStatusSnapshot", 'Int'>

@@ -28,11 +28,13 @@ export type AggregatePrinters = {
 
 export type PrintersAvgAggregateOutputType = {
   id: number | null
+  recoveryAttempts: number | null
   groupId: number | null
 }
 
 export type PrintersSumAggregateOutputType = {
   id: number | null
+  recoveryAttempts: number | null
   groupId: number | null
 }
 
@@ -41,6 +43,9 @@ export type PrintersMinAggregateOutputType = {
   name: string | null
   ip: string | null
   serialNumber: string | null
+  serialAlertSent: boolean | null
+  lastRecoveryAttemptAt: Date | null
+  recoveryAttempts: number | null
   brand: string | null
   model: string | null
   groupId: number | null
@@ -52,6 +57,9 @@ export type PrintersMaxAggregateOutputType = {
   name: string | null
   ip: string | null
   serialNumber: string | null
+  serialAlertSent: boolean | null
+  lastRecoveryAttemptAt: Date | null
+  recoveryAttempts: number | null
   brand: string | null
   model: string | null
   groupId: number | null
@@ -63,6 +71,9 @@ export type PrintersCountAggregateOutputType = {
   name: number
   ip: number
   serialNumber: number
+  serialAlertSent: number
+  lastRecoveryAttemptAt: number
+  recoveryAttempts: number
   brand: number
   model: number
   groupId: number
@@ -73,11 +84,13 @@ export type PrintersCountAggregateOutputType = {
 
 export type PrintersAvgAggregateInputType = {
   id?: true
+  recoveryAttempts?: true
   groupId?: true
 }
 
 export type PrintersSumAggregateInputType = {
   id?: true
+  recoveryAttempts?: true
   groupId?: true
 }
 
@@ -86,6 +99,9 @@ export type PrintersMinAggregateInputType = {
   name?: true
   ip?: true
   serialNumber?: true
+  serialAlertSent?: true
+  lastRecoveryAttemptAt?: true
+  recoveryAttempts?: true
   brand?: true
   model?: true
   groupId?: true
@@ -97,6 +113,9 @@ export type PrintersMaxAggregateInputType = {
   name?: true
   ip?: true
   serialNumber?: true
+  serialAlertSent?: true
+  lastRecoveryAttemptAt?: true
+  recoveryAttempts?: true
   brand?: true
   model?: true
   groupId?: true
@@ -108,6 +127,9 @@ export type PrintersCountAggregateInputType = {
   name?: true
   ip?: true
   serialNumber?: true
+  serialAlertSent?: true
+  lastRecoveryAttemptAt?: true
+  recoveryAttempts?: true
   brand?: true
   model?: true
   groupId?: true
@@ -206,6 +228,9 @@ export type PrintersGroupByOutputType = {
   name: string
   ip: string
   serialNumber: string | null
+  serialAlertSent: boolean
+  lastRecoveryAttemptAt: Date | null
+  recoveryAttempts: number
   brand: string
   model: string
   groupId: number
@@ -240,11 +265,15 @@ export type PrintersWhereInput = {
   name?: Prisma.StringFilter<"Printers"> | string
   ip?: Prisma.StringFilter<"Printers"> | string
   serialNumber?: Prisma.StringNullableFilter<"Printers"> | string | null
+  serialAlertSent?: Prisma.BoolFilter<"Printers"> | boolean
+  lastRecoveryAttemptAt?: Prisma.DateTimeNullableFilter<"Printers"> | Date | string | null
+  recoveryAttempts?: Prisma.IntFilter<"Printers"> | number
   brand?: Prisma.StringFilter<"Printers"> | string
   model?: Prisma.StringFilter<"Printers"> | string
   groupId?: Prisma.IntFilter<"Printers"> | number
   createdAt?: Prisma.DateTimeFilter<"Printers"> | Date | string
   group?: Prisma.XOR<Prisma.GroupScalarRelationFilter, Prisma.GroupWhereInput>
+  ipHistory?: Prisma.PrinterIpHistoryListRelationFilter
   alerts?: Prisma.PrinterAlertStateListRelationFilter
   snapshots?: Prisma.PrinterStatusSnapshotListRelationFilter
 }
@@ -254,11 +283,15 @@ export type PrintersOrderByWithRelationInput = {
   name?: Prisma.SortOrder
   ip?: Prisma.SortOrder
   serialNumber?: Prisma.SortOrderInput | Prisma.SortOrder
+  serialAlertSent?: Prisma.SortOrder
+  lastRecoveryAttemptAt?: Prisma.SortOrderInput | Prisma.SortOrder
+  recoveryAttempts?: Prisma.SortOrder
   brand?: Prisma.SortOrder
   model?: Prisma.SortOrder
   groupId?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   group?: Prisma.GroupOrderByWithRelationInput
+  ipHistory?: Prisma.PrinterIpHistoryOrderByRelationAggregateInput
   alerts?: Prisma.PrinterAlertStateOrderByRelationAggregateInput
   snapshots?: Prisma.PrinterStatusSnapshotOrderByRelationAggregateInput
 }
@@ -271,11 +304,15 @@ export type PrintersWhereUniqueInput = Prisma.AtLeast<{
   NOT?: Prisma.PrintersWhereInput | Prisma.PrintersWhereInput[]
   name?: Prisma.StringFilter<"Printers"> | string
   serialNumber?: Prisma.StringNullableFilter<"Printers"> | string | null
+  serialAlertSent?: Prisma.BoolFilter<"Printers"> | boolean
+  lastRecoveryAttemptAt?: Prisma.DateTimeNullableFilter<"Printers"> | Date | string | null
+  recoveryAttempts?: Prisma.IntFilter<"Printers"> | number
   brand?: Prisma.StringFilter<"Printers"> | string
   model?: Prisma.StringFilter<"Printers"> | string
   groupId?: Prisma.IntFilter<"Printers"> | number
   createdAt?: Prisma.DateTimeFilter<"Printers"> | Date | string
   group?: Prisma.XOR<Prisma.GroupScalarRelationFilter, Prisma.GroupWhereInput>
+  ipHistory?: Prisma.PrinterIpHistoryListRelationFilter
   alerts?: Prisma.PrinterAlertStateListRelationFilter
   snapshots?: Prisma.PrinterStatusSnapshotListRelationFilter
 }, "id" | "ip">
@@ -285,6 +322,9 @@ export type PrintersOrderByWithAggregationInput = {
   name?: Prisma.SortOrder
   ip?: Prisma.SortOrder
   serialNumber?: Prisma.SortOrderInput | Prisma.SortOrder
+  serialAlertSent?: Prisma.SortOrder
+  lastRecoveryAttemptAt?: Prisma.SortOrderInput | Prisma.SortOrder
+  recoveryAttempts?: Prisma.SortOrder
   brand?: Prisma.SortOrder
   model?: Prisma.SortOrder
   groupId?: Prisma.SortOrder
@@ -304,6 +344,9 @@ export type PrintersScalarWhereWithAggregatesInput = {
   name?: Prisma.StringWithAggregatesFilter<"Printers"> | string
   ip?: Prisma.StringWithAggregatesFilter<"Printers"> | string
   serialNumber?: Prisma.StringNullableWithAggregatesFilter<"Printers"> | string | null
+  serialAlertSent?: Prisma.BoolWithAggregatesFilter<"Printers"> | boolean
+  lastRecoveryAttemptAt?: Prisma.DateTimeNullableWithAggregatesFilter<"Printers"> | Date | string | null
+  recoveryAttempts?: Prisma.IntWithAggregatesFilter<"Printers"> | number
   brand?: Prisma.StringWithAggregatesFilter<"Printers"> | string
   model?: Prisma.StringWithAggregatesFilter<"Printers"> | string
   groupId?: Prisma.IntWithAggregatesFilter<"Printers"> | number
@@ -314,10 +357,14 @@ export type PrintersCreateInput = {
   name: string
   ip: string
   serialNumber?: string | null
+  serialAlertSent?: boolean
+  lastRecoveryAttemptAt?: Date | string | null
+  recoveryAttempts?: number
   brand: string
   model: string
   createdAt?: Date | string
   group: Prisma.GroupCreateNestedOneWithoutPrintersInput
+  ipHistory?: Prisma.PrinterIpHistoryCreateNestedManyWithoutPrinterInput
   alerts?: Prisma.PrinterAlertStateCreateNestedManyWithoutPrinterInput
   snapshots?: Prisma.PrinterStatusSnapshotCreateNestedManyWithoutPrinterInput
 }
@@ -327,10 +374,14 @@ export type PrintersUncheckedCreateInput = {
   name: string
   ip: string
   serialNumber?: string | null
+  serialAlertSent?: boolean
+  lastRecoveryAttemptAt?: Date | string | null
+  recoveryAttempts?: number
   brand: string
   model: string
   groupId: number
   createdAt?: Date | string
+  ipHistory?: Prisma.PrinterIpHistoryUncheckedCreateNestedManyWithoutPrinterInput
   alerts?: Prisma.PrinterAlertStateUncheckedCreateNestedManyWithoutPrinterInput
   snapshots?: Prisma.PrinterStatusSnapshotUncheckedCreateNestedManyWithoutPrinterInput
 }
@@ -339,10 +390,14 @@ export type PrintersUpdateInput = {
   name?: Prisma.StringFieldUpdateOperationsInput | string
   ip?: Prisma.StringFieldUpdateOperationsInput | string
   serialNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  serialAlertSent?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  lastRecoveryAttemptAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  recoveryAttempts?: Prisma.IntFieldUpdateOperationsInput | number
   brand?: Prisma.StringFieldUpdateOperationsInput | string
   model?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   group?: Prisma.GroupUpdateOneRequiredWithoutPrintersNestedInput
+  ipHistory?: Prisma.PrinterIpHistoryUpdateManyWithoutPrinterNestedInput
   alerts?: Prisma.PrinterAlertStateUpdateManyWithoutPrinterNestedInput
   snapshots?: Prisma.PrinterStatusSnapshotUpdateManyWithoutPrinterNestedInput
 }
@@ -352,10 +407,14 @@ export type PrintersUncheckedUpdateInput = {
   name?: Prisma.StringFieldUpdateOperationsInput | string
   ip?: Prisma.StringFieldUpdateOperationsInput | string
   serialNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  serialAlertSent?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  lastRecoveryAttemptAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  recoveryAttempts?: Prisma.IntFieldUpdateOperationsInput | number
   brand?: Prisma.StringFieldUpdateOperationsInput | string
   model?: Prisma.StringFieldUpdateOperationsInput | string
   groupId?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  ipHistory?: Prisma.PrinterIpHistoryUncheckedUpdateManyWithoutPrinterNestedInput
   alerts?: Prisma.PrinterAlertStateUncheckedUpdateManyWithoutPrinterNestedInput
   snapshots?: Prisma.PrinterStatusSnapshotUncheckedUpdateManyWithoutPrinterNestedInput
 }
@@ -365,6 +424,9 @@ export type PrintersCreateManyInput = {
   name: string
   ip: string
   serialNumber?: string | null
+  serialAlertSent?: boolean
+  lastRecoveryAttemptAt?: Date | string | null
+  recoveryAttempts?: number
   brand: string
   model: string
   groupId: number
@@ -375,6 +437,9 @@ export type PrintersUpdateManyMutationInput = {
   name?: Prisma.StringFieldUpdateOperationsInput | string
   ip?: Prisma.StringFieldUpdateOperationsInput | string
   serialNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  serialAlertSent?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  lastRecoveryAttemptAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  recoveryAttempts?: Prisma.IntFieldUpdateOperationsInput | number
   brand?: Prisma.StringFieldUpdateOperationsInput | string
   model?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -385,6 +450,9 @@ export type PrintersUncheckedUpdateManyInput = {
   name?: Prisma.StringFieldUpdateOperationsInput | string
   ip?: Prisma.StringFieldUpdateOperationsInput | string
   serialNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  serialAlertSent?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  lastRecoveryAttemptAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  recoveryAttempts?: Prisma.IntFieldUpdateOperationsInput | number
   brand?: Prisma.StringFieldUpdateOperationsInput | string
   model?: Prisma.StringFieldUpdateOperationsInput | string
   groupId?: Prisma.IntFieldUpdateOperationsInput | number
@@ -396,6 +464,9 @@ export type PrintersCountOrderByAggregateInput = {
   name?: Prisma.SortOrder
   ip?: Prisma.SortOrder
   serialNumber?: Prisma.SortOrder
+  serialAlertSent?: Prisma.SortOrder
+  lastRecoveryAttemptAt?: Prisma.SortOrder
+  recoveryAttempts?: Prisma.SortOrder
   brand?: Prisma.SortOrder
   model?: Prisma.SortOrder
   groupId?: Prisma.SortOrder
@@ -404,6 +475,7 @@ export type PrintersCountOrderByAggregateInput = {
 
 export type PrintersAvgOrderByAggregateInput = {
   id?: Prisma.SortOrder
+  recoveryAttempts?: Prisma.SortOrder
   groupId?: Prisma.SortOrder
 }
 
@@ -412,6 +484,9 @@ export type PrintersMaxOrderByAggregateInput = {
   name?: Prisma.SortOrder
   ip?: Prisma.SortOrder
   serialNumber?: Prisma.SortOrder
+  serialAlertSent?: Prisma.SortOrder
+  lastRecoveryAttemptAt?: Prisma.SortOrder
+  recoveryAttempts?: Prisma.SortOrder
   brand?: Prisma.SortOrder
   model?: Prisma.SortOrder
   groupId?: Prisma.SortOrder
@@ -423,6 +498,9 @@ export type PrintersMinOrderByAggregateInput = {
   name?: Prisma.SortOrder
   ip?: Prisma.SortOrder
   serialNumber?: Prisma.SortOrder
+  serialAlertSent?: Prisma.SortOrder
+  lastRecoveryAttemptAt?: Prisma.SortOrder
+  recoveryAttempts?: Prisma.SortOrder
   brand?: Prisma.SortOrder
   model?: Prisma.SortOrder
   groupId?: Prisma.SortOrder
@@ -431,6 +509,7 @@ export type PrintersMinOrderByAggregateInput = {
 
 export type PrintersSumOrderByAggregateInput = {
   id?: Prisma.SortOrder
+  recoveryAttempts?: Prisma.SortOrder
   groupId?: Prisma.SortOrder
 }
 
@@ -457,8 +536,12 @@ export type NullableStringFieldUpdateOperationsInput = {
   set?: string | null
 }
 
-export type DateTimeFieldUpdateOperationsInput = {
-  set?: Date | string
+export type BoolFieldUpdateOperationsInput = {
+  set?: boolean
+}
+
+export type NullableDateTimeFieldUpdateOperationsInput = {
+  set?: Date | string | null
 }
 
 export type IntFieldUpdateOperationsInput = {
@@ -467,6 +550,10 @@ export type IntFieldUpdateOperationsInput = {
   decrement?: number
   multiply?: number
   divide?: number
+}
+
+export type DateTimeFieldUpdateOperationsInput = {
+  set?: Date | string
 }
 
 export type PrintersCreateNestedManyWithoutGroupInput = {
@@ -511,6 +598,20 @@ export type PrintersUncheckedUpdateManyWithoutGroupNestedInput = {
   deleteMany?: Prisma.PrintersScalarWhereInput | Prisma.PrintersScalarWhereInput[]
 }
 
+export type PrintersCreateNestedOneWithoutIpHistoryInput = {
+  create?: Prisma.XOR<Prisma.PrintersCreateWithoutIpHistoryInput, Prisma.PrintersUncheckedCreateWithoutIpHistoryInput>
+  connectOrCreate?: Prisma.PrintersCreateOrConnectWithoutIpHistoryInput
+  connect?: Prisma.PrintersWhereUniqueInput
+}
+
+export type PrintersUpdateOneRequiredWithoutIpHistoryNestedInput = {
+  create?: Prisma.XOR<Prisma.PrintersCreateWithoutIpHistoryInput, Prisma.PrintersUncheckedCreateWithoutIpHistoryInput>
+  connectOrCreate?: Prisma.PrintersCreateOrConnectWithoutIpHistoryInput
+  upsert?: Prisma.PrintersUpsertWithoutIpHistoryInput
+  connect?: Prisma.PrintersWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.PrintersUpdateToOneWithWhereWithoutIpHistoryInput, Prisma.PrintersUpdateWithoutIpHistoryInput>, Prisma.PrintersUncheckedUpdateWithoutIpHistoryInput>
+}
+
 export type PrintersCreateNestedOneWithoutAlertsInput = {
   create?: Prisma.XOR<Prisma.PrintersCreateWithoutAlertsInput, Prisma.PrintersUncheckedCreateWithoutAlertsInput>
   connectOrCreate?: Prisma.PrintersCreateOrConnectWithoutAlertsInput
@@ -543,9 +644,13 @@ export type PrintersCreateWithoutGroupInput = {
   name: string
   ip: string
   serialNumber?: string | null
+  serialAlertSent?: boolean
+  lastRecoveryAttemptAt?: Date | string | null
+  recoveryAttempts?: number
   brand: string
   model: string
   createdAt?: Date | string
+  ipHistory?: Prisma.PrinterIpHistoryCreateNestedManyWithoutPrinterInput
   alerts?: Prisma.PrinterAlertStateCreateNestedManyWithoutPrinterInput
   snapshots?: Prisma.PrinterStatusSnapshotCreateNestedManyWithoutPrinterInput
 }
@@ -555,9 +660,13 @@ export type PrintersUncheckedCreateWithoutGroupInput = {
   name: string
   ip: string
   serialNumber?: string | null
+  serialAlertSent?: boolean
+  lastRecoveryAttemptAt?: Date | string | null
+  recoveryAttempts?: number
   brand: string
   model: string
   createdAt?: Date | string
+  ipHistory?: Prisma.PrinterIpHistoryUncheckedCreateNestedManyWithoutPrinterInput
   alerts?: Prisma.PrinterAlertStateUncheckedCreateNestedManyWithoutPrinterInput
   snapshots?: Prisma.PrinterStatusSnapshotUncheckedCreateNestedManyWithoutPrinterInput
 }
@@ -596,20 +705,105 @@ export type PrintersScalarWhereInput = {
   name?: Prisma.StringFilter<"Printers"> | string
   ip?: Prisma.StringFilter<"Printers"> | string
   serialNumber?: Prisma.StringNullableFilter<"Printers"> | string | null
+  serialAlertSent?: Prisma.BoolFilter<"Printers"> | boolean
+  lastRecoveryAttemptAt?: Prisma.DateTimeNullableFilter<"Printers"> | Date | string | null
+  recoveryAttempts?: Prisma.IntFilter<"Printers"> | number
   brand?: Prisma.StringFilter<"Printers"> | string
   model?: Prisma.StringFilter<"Printers"> | string
   groupId?: Prisma.IntFilter<"Printers"> | number
   createdAt?: Prisma.DateTimeFilter<"Printers"> | Date | string
 }
 
-export type PrintersCreateWithoutAlertsInput = {
+export type PrintersCreateWithoutIpHistoryInput = {
   name: string
   ip: string
   serialNumber?: string | null
+  serialAlertSent?: boolean
+  lastRecoveryAttemptAt?: Date | string | null
+  recoveryAttempts?: number
   brand: string
   model: string
   createdAt?: Date | string
   group: Prisma.GroupCreateNestedOneWithoutPrintersInput
+  alerts?: Prisma.PrinterAlertStateCreateNestedManyWithoutPrinterInput
+  snapshots?: Prisma.PrinterStatusSnapshotCreateNestedManyWithoutPrinterInput
+}
+
+export type PrintersUncheckedCreateWithoutIpHistoryInput = {
+  id?: number
+  name: string
+  ip: string
+  serialNumber?: string | null
+  serialAlertSent?: boolean
+  lastRecoveryAttemptAt?: Date | string | null
+  recoveryAttempts?: number
+  brand: string
+  model: string
+  groupId: number
+  createdAt?: Date | string
+  alerts?: Prisma.PrinterAlertStateUncheckedCreateNestedManyWithoutPrinterInput
+  snapshots?: Prisma.PrinterStatusSnapshotUncheckedCreateNestedManyWithoutPrinterInput
+}
+
+export type PrintersCreateOrConnectWithoutIpHistoryInput = {
+  where: Prisma.PrintersWhereUniqueInput
+  create: Prisma.XOR<Prisma.PrintersCreateWithoutIpHistoryInput, Prisma.PrintersUncheckedCreateWithoutIpHistoryInput>
+}
+
+export type PrintersUpsertWithoutIpHistoryInput = {
+  update: Prisma.XOR<Prisma.PrintersUpdateWithoutIpHistoryInput, Prisma.PrintersUncheckedUpdateWithoutIpHistoryInput>
+  create: Prisma.XOR<Prisma.PrintersCreateWithoutIpHistoryInput, Prisma.PrintersUncheckedCreateWithoutIpHistoryInput>
+  where?: Prisma.PrintersWhereInput
+}
+
+export type PrintersUpdateToOneWithWhereWithoutIpHistoryInput = {
+  where?: Prisma.PrintersWhereInput
+  data: Prisma.XOR<Prisma.PrintersUpdateWithoutIpHistoryInput, Prisma.PrintersUncheckedUpdateWithoutIpHistoryInput>
+}
+
+export type PrintersUpdateWithoutIpHistoryInput = {
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  ip?: Prisma.StringFieldUpdateOperationsInput | string
+  serialNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  serialAlertSent?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  lastRecoveryAttemptAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  recoveryAttempts?: Prisma.IntFieldUpdateOperationsInput | number
+  brand?: Prisma.StringFieldUpdateOperationsInput | string
+  model?: Prisma.StringFieldUpdateOperationsInput | string
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  group?: Prisma.GroupUpdateOneRequiredWithoutPrintersNestedInput
+  alerts?: Prisma.PrinterAlertStateUpdateManyWithoutPrinterNestedInput
+  snapshots?: Prisma.PrinterStatusSnapshotUpdateManyWithoutPrinterNestedInput
+}
+
+export type PrintersUncheckedUpdateWithoutIpHistoryInput = {
+  id?: Prisma.IntFieldUpdateOperationsInput | number
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  ip?: Prisma.StringFieldUpdateOperationsInput | string
+  serialNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  serialAlertSent?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  lastRecoveryAttemptAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  recoveryAttempts?: Prisma.IntFieldUpdateOperationsInput | number
+  brand?: Prisma.StringFieldUpdateOperationsInput | string
+  model?: Prisma.StringFieldUpdateOperationsInput | string
+  groupId?: Prisma.IntFieldUpdateOperationsInput | number
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  alerts?: Prisma.PrinterAlertStateUncheckedUpdateManyWithoutPrinterNestedInput
+  snapshots?: Prisma.PrinterStatusSnapshotUncheckedUpdateManyWithoutPrinterNestedInput
+}
+
+export type PrintersCreateWithoutAlertsInput = {
+  name: string
+  ip: string
+  serialNumber?: string | null
+  serialAlertSent?: boolean
+  lastRecoveryAttemptAt?: Date | string | null
+  recoveryAttempts?: number
+  brand: string
+  model: string
+  createdAt?: Date | string
+  group: Prisma.GroupCreateNestedOneWithoutPrintersInput
+  ipHistory?: Prisma.PrinterIpHistoryCreateNestedManyWithoutPrinterInput
   snapshots?: Prisma.PrinterStatusSnapshotCreateNestedManyWithoutPrinterInput
 }
 
@@ -618,10 +812,14 @@ export type PrintersUncheckedCreateWithoutAlertsInput = {
   name: string
   ip: string
   serialNumber?: string | null
+  serialAlertSent?: boolean
+  lastRecoveryAttemptAt?: Date | string | null
+  recoveryAttempts?: number
   brand: string
   model: string
   groupId: number
   createdAt?: Date | string
+  ipHistory?: Prisma.PrinterIpHistoryUncheckedCreateNestedManyWithoutPrinterInput
   snapshots?: Prisma.PrinterStatusSnapshotUncheckedCreateNestedManyWithoutPrinterInput
 }
 
@@ -645,10 +843,14 @@ export type PrintersUpdateWithoutAlertsInput = {
   name?: Prisma.StringFieldUpdateOperationsInput | string
   ip?: Prisma.StringFieldUpdateOperationsInput | string
   serialNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  serialAlertSent?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  lastRecoveryAttemptAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  recoveryAttempts?: Prisma.IntFieldUpdateOperationsInput | number
   brand?: Prisma.StringFieldUpdateOperationsInput | string
   model?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   group?: Prisma.GroupUpdateOneRequiredWithoutPrintersNestedInput
+  ipHistory?: Prisma.PrinterIpHistoryUpdateManyWithoutPrinterNestedInput
   snapshots?: Prisma.PrinterStatusSnapshotUpdateManyWithoutPrinterNestedInput
 }
 
@@ -657,10 +859,14 @@ export type PrintersUncheckedUpdateWithoutAlertsInput = {
   name?: Prisma.StringFieldUpdateOperationsInput | string
   ip?: Prisma.StringFieldUpdateOperationsInput | string
   serialNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  serialAlertSent?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  lastRecoveryAttemptAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  recoveryAttempts?: Prisma.IntFieldUpdateOperationsInput | number
   brand?: Prisma.StringFieldUpdateOperationsInput | string
   model?: Prisma.StringFieldUpdateOperationsInput | string
   groupId?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  ipHistory?: Prisma.PrinterIpHistoryUncheckedUpdateManyWithoutPrinterNestedInput
   snapshots?: Prisma.PrinterStatusSnapshotUncheckedUpdateManyWithoutPrinterNestedInput
 }
 
@@ -668,10 +874,14 @@ export type PrintersCreateWithoutSnapshotsInput = {
   name: string
   ip: string
   serialNumber?: string | null
+  serialAlertSent?: boolean
+  lastRecoveryAttemptAt?: Date | string | null
+  recoveryAttempts?: number
   brand: string
   model: string
   createdAt?: Date | string
   group: Prisma.GroupCreateNestedOneWithoutPrintersInput
+  ipHistory?: Prisma.PrinterIpHistoryCreateNestedManyWithoutPrinterInput
   alerts?: Prisma.PrinterAlertStateCreateNestedManyWithoutPrinterInput
 }
 
@@ -680,10 +890,14 @@ export type PrintersUncheckedCreateWithoutSnapshotsInput = {
   name: string
   ip: string
   serialNumber?: string | null
+  serialAlertSent?: boolean
+  lastRecoveryAttemptAt?: Date | string | null
+  recoveryAttempts?: number
   brand: string
   model: string
   groupId: number
   createdAt?: Date | string
+  ipHistory?: Prisma.PrinterIpHistoryUncheckedCreateNestedManyWithoutPrinterInput
   alerts?: Prisma.PrinterAlertStateUncheckedCreateNestedManyWithoutPrinterInput
 }
 
@@ -707,10 +921,14 @@ export type PrintersUpdateWithoutSnapshotsInput = {
   name?: Prisma.StringFieldUpdateOperationsInput | string
   ip?: Prisma.StringFieldUpdateOperationsInput | string
   serialNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  serialAlertSent?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  lastRecoveryAttemptAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  recoveryAttempts?: Prisma.IntFieldUpdateOperationsInput | number
   brand?: Prisma.StringFieldUpdateOperationsInput | string
   model?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   group?: Prisma.GroupUpdateOneRequiredWithoutPrintersNestedInput
+  ipHistory?: Prisma.PrinterIpHistoryUpdateManyWithoutPrinterNestedInput
   alerts?: Prisma.PrinterAlertStateUpdateManyWithoutPrinterNestedInput
 }
 
@@ -719,10 +937,14 @@ export type PrintersUncheckedUpdateWithoutSnapshotsInput = {
   name?: Prisma.StringFieldUpdateOperationsInput | string
   ip?: Prisma.StringFieldUpdateOperationsInput | string
   serialNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  serialAlertSent?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  lastRecoveryAttemptAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  recoveryAttempts?: Prisma.IntFieldUpdateOperationsInput | number
   brand?: Prisma.StringFieldUpdateOperationsInput | string
   model?: Prisma.StringFieldUpdateOperationsInput | string
   groupId?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  ipHistory?: Prisma.PrinterIpHistoryUncheckedUpdateManyWithoutPrinterNestedInput
   alerts?: Prisma.PrinterAlertStateUncheckedUpdateManyWithoutPrinterNestedInput
 }
 
@@ -731,6 +953,9 @@ export type PrintersCreateManyGroupInput = {
   name: string
   ip: string
   serialNumber?: string | null
+  serialAlertSent?: boolean
+  lastRecoveryAttemptAt?: Date | string | null
+  recoveryAttempts?: number
   brand: string
   model: string
   createdAt?: Date | string
@@ -740,9 +965,13 @@ export type PrintersUpdateWithoutGroupInput = {
   name?: Prisma.StringFieldUpdateOperationsInput | string
   ip?: Prisma.StringFieldUpdateOperationsInput | string
   serialNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  serialAlertSent?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  lastRecoveryAttemptAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  recoveryAttempts?: Prisma.IntFieldUpdateOperationsInput | number
   brand?: Prisma.StringFieldUpdateOperationsInput | string
   model?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  ipHistory?: Prisma.PrinterIpHistoryUpdateManyWithoutPrinterNestedInput
   alerts?: Prisma.PrinterAlertStateUpdateManyWithoutPrinterNestedInput
   snapshots?: Prisma.PrinterStatusSnapshotUpdateManyWithoutPrinterNestedInput
 }
@@ -752,9 +981,13 @@ export type PrintersUncheckedUpdateWithoutGroupInput = {
   name?: Prisma.StringFieldUpdateOperationsInput | string
   ip?: Prisma.StringFieldUpdateOperationsInput | string
   serialNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  serialAlertSent?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  lastRecoveryAttemptAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  recoveryAttempts?: Prisma.IntFieldUpdateOperationsInput | number
   brand?: Prisma.StringFieldUpdateOperationsInput | string
   model?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  ipHistory?: Prisma.PrinterIpHistoryUncheckedUpdateManyWithoutPrinterNestedInput
   alerts?: Prisma.PrinterAlertStateUncheckedUpdateManyWithoutPrinterNestedInput
   snapshots?: Prisma.PrinterStatusSnapshotUncheckedUpdateManyWithoutPrinterNestedInput
 }
@@ -764,6 +997,9 @@ export type PrintersUncheckedUpdateManyWithoutGroupInput = {
   name?: Prisma.StringFieldUpdateOperationsInput | string
   ip?: Prisma.StringFieldUpdateOperationsInput | string
   serialNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  serialAlertSent?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  lastRecoveryAttemptAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  recoveryAttempts?: Prisma.IntFieldUpdateOperationsInput | number
   brand?: Prisma.StringFieldUpdateOperationsInput | string
   model?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -775,11 +1011,13 @@ export type PrintersUncheckedUpdateManyWithoutGroupInput = {
  */
 
 export type PrintersCountOutputType = {
+  ipHistory: number
   alerts: number
   snapshots: number
 }
 
 export type PrintersCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  ipHistory?: boolean | PrintersCountOutputTypeCountIpHistoryArgs
   alerts?: boolean | PrintersCountOutputTypeCountAlertsArgs
   snapshots?: boolean | PrintersCountOutputTypeCountSnapshotsArgs
 }
@@ -792,6 +1030,13 @@ export type PrintersCountOutputTypeDefaultArgs<ExtArgs extends runtime.Types.Ext
    * Select specific fields to fetch from the PrintersCountOutputType
    */
   select?: Prisma.PrintersCountOutputTypeSelect<ExtArgs> | null
+}
+
+/**
+ * PrintersCountOutputType without action
+ */
+export type PrintersCountOutputTypeCountIpHistoryArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.PrinterIpHistoryWhereInput
 }
 
 /**
@@ -814,11 +1059,15 @@ export type PrintersSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs
   name?: boolean
   ip?: boolean
   serialNumber?: boolean
+  serialAlertSent?: boolean
+  lastRecoveryAttemptAt?: boolean
+  recoveryAttempts?: boolean
   brand?: boolean
   model?: boolean
   groupId?: boolean
   createdAt?: boolean
   group?: boolean | Prisma.GroupDefaultArgs<ExtArgs>
+  ipHistory?: boolean | Prisma.Printers$ipHistoryArgs<ExtArgs>
   alerts?: boolean | Prisma.Printers$alertsArgs<ExtArgs>
   snapshots?: boolean | Prisma.Printers$snapshotsArgs<ExtArgs>
   _count?: boolean | Prisma.PrintersCountOutputTypeDefaultArgs<ExtArgs>
@@ -829,6 +1078,9 @@ export type PrintersSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Exte
   name?: boolean
   ip?: boolean
   serialNumber?: boolean
+  serialAlertSent?: boolean
+  lastRecoveryAttemptAt?: boolean
+  recoveryAttempts?: boolean
   brand?: boolean
   model?: boolean
   groupId?: boolean
@@ -841,6 +1093,9 @@ export type PrintersSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Exte
   name?: boolean
   ip?: boolean
   serialNumber?: boolean
+  serialAlertSent?: boolean
+  lastRecoveryAttemptAt?: boolean
+  recoveryAttempts?: boolean
   brand?: boolean
   model?: boolean
   groupId?: boolean
@@ -853,15 +1108,19 @@ export type PrintersSelectScalar = {
   name?: boolean
   ip?: boolean
   serialNumber?: boolean
+  serialAlertSent?: boolean
+  lastRecoveryAttemptAt?: boolean
+  recoveryAttempts?: boolean
   brand?: boolean
   model?: boolean
   groupId?: boolean
   createdAt?: boolean
 }
 
-export type PrintersOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "name" | "ip" | "serialNumber" | "brand" | "model" | "groupId" | "createdAt", ExtArgs["result"]["printers"]>
+export type PrintersOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "name" | "ip" | "serialNumber" | "serialAlertSent" | "lastRecoveryAttemptAt" | "recoveryAttempts" | "brand" | "model" | "groupId" | "createdAt", ExtArgs["result"]["printers"]>
 export type PrintersInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   group?: boolean | Prisma.GroupDefaultArgs<ExtArgs>
+  ipHistory?: boolean | Prisma.Printers$ipHistoryArgs<ExtArgs>
   alerts?: boolean | Prisma.Printers$alertsArgs<ExtArgs>
   snapshots?: boolean | Prisma.Printers$snapshotsArgs<ExtArgs>
   _count?: boolean | Prisma.PrintersCountOutputTypeDefaultArgs<ExtArgs>
@@ -877,6 +1136,7 @@ export type $PrintersPayload<ExtArgs extends runtime.Types.Extensions.InternalAr
   name: "Printers"
   objects: {
     group: Prisma.$GroupPayload<ExtArgs>
+    ipHistory: Prisma.$PrinterIpHistoryPayload<ExtArgs>[]
     alerts: Prisma.$PrinterAlertStatePayload<ExtArgs>[]
     snapshots: Prisma.$PrinterStatusSnapshotPayload<ExtArgs>[]
   }
@@ -885,6 +1145,9 @@ export type $PrintersPayload<ExtArgs extends runtime.Types.Extensions.InternalAr
     name: string
     ip: string
     serialNumber: string | null
+    serialAlertSent: boolean
+    lastRecoveryAttemptAt: Date | null
+    recoveryAttempts: number
     brand: string
     model: string
     groupId: number
@@ -1284,6 +1547,7 @@ readonly fields: PrintersFieldRefs;
 export interface Prisma__PrintersClient<T, Null = never, ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
   readonly [Symbol.toStringTag]: "PrismaPromise"
   group<T extends Prisma.GroupDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.GroupDefaultArgs<ExtArgs>>): Prisma.Prisma__GroupClient<runtime.Types.Result.GetResult<Prisma.$GroupPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+  ipHistory<T extends Prisma.Printers$ipHistoryArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Printers$ipHistoryArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$PrinterIpHistoryPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   alerts<T extends Prisma.Printers$alertsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Printers$alertsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$PrinterAlertStatePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   snapshots<T extends Prisma.Printers$snapshotsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Printers$snapshotsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$PrinterStatusSnapshotPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   /**
@@ -1319,6 +1583,9 @@ export interface PrintersFieldRefs {
   readonly name: Prisma.FieldRef<"Printers", 'String'>
   readonly ip: Prisma.FieldRef<"Printers", 'String'>
   readonly serialNumber: Prisma.FieldRef<"Printers", 'String'>
+  readonly serialAlertSent: Prisma.FieldRef<"Printers", 'Boolean'>
+  readonly lastRecoveryAttemptAt: Prisma.FieldRef<"Printers", 'DateTime'>
+  readonly recoveryAttempts: Prisma.FieldRef<"Printers", 'Int'>
   readonly brand: Prisma.FieldRef<"Printers", 'String'>
   readonly model: Prisma.FieldRef<"Printers", 'String'>
   readonly groupId: Prisma.FieldRef<"Printers", 'Int'>
@@ -1721,6 +1988,30 @@ export type PrintersDeleteManyArgs<ExtArgs extends runtime.Types.Extensions.Inte
    * Limit how many Printers to delete.
    */
   limit?: number
+}
+
+/**
+ * Printers.ipHistory
+ */
+export type Printers$ipHistoryArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the PrinterIpHistory
+   */
+  select?: Prisma.PrinterIpHistorySelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the PrinterIpHistory
+   */
+  omit?: Prisma.PrinterIpHistoryOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.PrinterIpHistoryInclude<ExtArgs> | null
+  where?: Prisma.PrinterIpHistoryWhereInput
+  orderBy?: Prisma.PrinterIpHistoryOrderByWithRelationInput | Prisma.PrinterIpHistoryOrderByWithRelationInput[]
+  cursor?: Prisma.PrinterIpHistoryWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.PrinterIpHistoryScalarFieldEnum | Prisma.PrinterIpHistoryScalarFieldEnum[]
 }
 
 /**

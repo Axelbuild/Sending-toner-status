@@ -53,6 +53,8 @@ export const AnyNull = runtime.AnyNull
 export const ModelName = {
   Printers: 'Printers',
   Group: 'Group',
+  DiscoveredPrinterModel: 'DiscoveredPrinterModel',
+  PrinterIpHistory: 'PrinterIpHistory',
   PrinterAlertState: 'PrinterAlertState',
   PrinterStatusSnapshot: 'PrinterStatusSnapshot'
 } as const
@@ -78,6 +80,9 @@ export const PrintersScalarFieldEnum = {
   name: 'name',
   ip: 'ip',
   serialNumber: 'serialNumber',
+  serialAlertSent: 'serialAlertSent',
+  lastRecoveryAttemptAt: 'lastRecoveryAttemptAt',
+  recoveryAttempts: 'recoveryAttempts',
   brand: 'brand',
   model: 'model',
   groupId: 'groupId',
@@ -93,6 +98,29 @@ export const GroupScalarFieldEnum = {
 } as const
 
 export type GroupScalarFieldEnum = (typeof GroupScalarFieldEnum)[keyof typeof GroupScalarFieldEnum]
+
+
+export const DiscoveredPrinterModelScalarFieldEnum = {
+  id: 'id',
+  brand: 'brand',
+  model: 'model',
+  sysObjectId: 'sysObjectId',
+  createdAt: 'createdAt'
+} as const
+
+export type DiscoveredPrinterModelScalarFieldEnum = (typeof DiscoveredPrinterModelScalarFieldEnum)[keyof typeof DiscoveredPrinterModelScalarFieldEnum]
+
+
+export const PrinterIpHistoryScalarFieldEnum = {
+  id: 'id',
+  printerId: 'printerId',
+  oldIp: 'oldIp',
+  newIp: 'newIp',
+  serialNumber: 'serialNumber',
+  createdAt: 'createdAt'
+} as const
+
+export type PrinterIpHistoryScalarFieldEnum = (typeof PrinterIpHistoryScalarFieldEnum)[keyof typeof PrinterIpHistoryScalarFieldEnum]
 
 
 export const PrinterAlertStateScalarFieldEnum = {
@@ -114,6 +142,9 @@ export const PrinterStatusSnapshotScalarFieldEnum = {
   id: 'id',
   printerId: 'printerId',
   online: 'online',
+  status: 'status',
+  consecutiveFailures: 'consecutiveFailures',
+  lastSeenOnlineAt: 'lastSeenOnlineAt',
   black: 'black',
   cyan: 'cyan',
   magenta: 'magenta',

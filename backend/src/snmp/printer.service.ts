@@ -5,10 +5,26 @@ import { PrinterStatus, PrinterSNMPTarget } from "../types/printer";
 
 type TonerColor = "black" | "cyan" | "magenta" | "yellow";
 
+const UNIVERSAL_SERIAL_NUMBER_OID = "1.3.6.1.2.1.43.5.1.1.17.1";
+
 function getNumberValue(value: unknown): number | undefined {
   if (typeof value === "number") return value;
   if (typeof value === "string" && !isNaN(Number(value))) return Number(value);
   return undefined;
+}
+
+function getStringValue(value: unknown): string | null {
+  if (value === undefined || value === null) return null;
+
+  const text = String(value)
+    .replace(/\u0000/g, "")
+    .replace(/\0/g, "")
+    .replace(/\r/g, "")
+    .replace(/\n/g, "")
+    .trim()
+    .toUpperCase();
+
+  return text.length > 0 ? text : null;
 }
 
 function calculatePercentage(current?: number, max?: number): number | undefined {
@@ -22,7 +38,7 @@ function calculatePercentage(current?: number, max?: number): number | undefined
   return percentage;
 }
 
-function snmpGet(session: snmp.Session, oid: string): Promise<number | undefined> {
+function snmpGetNumber(session: snmp.Session, oid: string): Promise<number | undefined> {
   return new Promise((resolve) => {
     session.get([oid], (error, varbinds) => {
       if (error || !varbinds?.length) {
@@ -31,6 +47,19 @@ function snmpGet(session: snmp.Session, oid: string): Promise<number | undefined
 
       const value = varbinds[0]?.value;
       resolve(getNumberValue(value));
+    });
+  });
+}
+
+function snmpGetString(session: snmp.Session, oid: string): Promise<string | null> {
+  return new Promise((resolve) => {
+    session.get([oid], (error, varbinds) => {
+      if (error || !varbinds?.length) {
+        return resolve(null);
+      }
+
+      const value = varbinds[0]?.value;
+      resolve(getStringValue(value));
     });
   });
 }
@@ -47,6 +76,7 @@ export const getPrinterStatus = async (
     return {
       ip,
       online: false,
+      serialNumber: null,
       ink: {},
     };
   }
@@ -55,6 +85,11 @@ export const getPrinterStatus = async (
   const ink: PrinterStatus["ink"] = {};
 
   try {
+    const serialNumber = await snmpGetString(
+      session,
+      UNIVERSAL_SERIAL_NUMBER_OID
+    );
+
     const tonerEntries = Object.entries(modelConfig.toners) as [
       TonerColor,
       { index: number; max_oid: string; current_oid: string }
@@ -65,8 +100,8 @@ export const getPrinterStatus = async (
       const currentOid = `${brandConfig.base_oid}${toner.current_oid}`;
 
       const [maxValue, currentValue] = await Promise.all([
-        snmpGet(session, maxOid),
-        snmpGet(session, currentOid),
+        snmpGetNumber(session, maxOid),
+        snmpGetNumber(session, currentOid),
       ]);
 
       ink[color] = calculatePercentage(currentValue, maxValue);
@@ -80,6 +115,7 @@ export const getPrinterStatus = async (
       return {
         ip,
         online: false,
+        serialNumber,
         ink: {},
       };
     }
@@ -87,12 +123,14 @@ export const getPrinterStatus = async (
     return {
       ip,
       online: true,
+      serialNumber,
       ink,
     };
   } catch {
     return {
       ip,
       online: false,
+      serialNumber: null,
       ink: {},
     };
   } finally {

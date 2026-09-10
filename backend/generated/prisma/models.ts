@@ -10,6 +10,8 @@
  */
 export type * from './models/Printers'
 export type * from './models/Group'
+export type * from './models/DiscoveredPrinterModel'
+export type * from './models/PrinterIpHistory'
 export type * from './models/PrinterAlertState'
 export type * from './models/PrinterStatusSnapshot'
 export type * from './commonInputTypes'

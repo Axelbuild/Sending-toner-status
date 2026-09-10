@@ -3,9 +3,11 @@
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
-  "scripts": {
-    "start": "tsx src/app.ts"
-  },
+ "scripts": {
+  "dev": "tsx src/app.ts",
+  "build": "tsc",
+  "start": "tsx src/app.ts"
+},
   "repository": {
     "type": "git",
     "url": "git+https://github.com/Axelbuild/Sending-toner-status.git"

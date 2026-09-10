@@ -9,6 +9,7 @@ export type PrinterStatus = {
   id: number;
   name: string;
   ip: string;
+  serialNumber?: string | null;
   brand: string;
   model: string;
   type: "mono" | "color";
@@ -16,6 +17,9 @@ export type PrinterStatus = {
   groupId: number;
   groupName?: string | null;
   online: boolean;
+  status?: "ONLINE" | "SUSPECT" | "OFFLINE" | "UNKNOWN";
+  consecutiveFailures?: number;
+  lastSeenOnlineAt?: string | null;
   ink: InkLevels;
 };
 
@@ -26,4 +30,14 @@ export type PrinterInput = {
   groupId: number;
   brand: "HP" | "Samsung";
   model: string;
+};
+
+export type PrinterCatalog = Record<"HP" | "Samsung", string[]>;
+
+export type DetectedPrinter = {
+  brand: "HP" | "Samsung";
+  model: string;
+  sysDescr: string;
+  sysObjectId?: string;
+  addedToCatalog: boolean;
 };

@@ -60,7 +60,7 @@ export async function processPrinterAlerts(
       continue;
     }
 
-    if (level <= 2) {
+    if (level <= 5) {
       const shouldSendCritical =
         alertState.lastCriticalLevel === null ||
         level < alertState.lastCriticalLevel;
@@ -97,7 +97,7 @@ export async function processPrinterAlerts(
       continue;
     }
 
-    if (level <= 10 && level > 2) {
+    if (level <= 10 && level > 5) {
       if (!alertState.warnedAt10) {
         const mail = buildLowToner10Email({
           printerName: printer.name,
